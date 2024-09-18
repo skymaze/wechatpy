@@ -2,13 +2,11 @@
 import io
 import json
 import os
-import re
 import inspect
 import time
 import pytest
 from datetime import datetime
 
-from httmock import HTTMock, response, urlmatch
 import httpx
 from pytest_httpx import HTTPXMock
 
@@ -687,10 +685,9 @@ def test_jsapi_get_jsapi_signature(httpx_mock: HTTPXMock):
     ticket = "sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg"  # NOQA
     timestamp = 1414587457
     url = "http://mp.weixin.qq.com?params=value"
-    signature = client.jsapi.get_jsapi_signature(
-        noncestr, ticket, timestamp, url
-    )
+    signature = client.jsapi.get_jsapi_signature(noncestr, ticket, timestamp, url)
     assert "0f9de62fce790f9a083d5c99e95740ceb90c27ed" == signature
+
 
 def test_jsapi_get_jsapi_card_ticket(httpx_mock: HTTPXMock):
     """card_ticket 与 jsapi_ticket 的 api 都相同，除了请求参数 type 为 wx_card
@@ -698,9 +695,16 @@ def test_jsapi_get_jsapi_card_ticket(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     ticket = client.jsapi.get_jsapi_card_ticket()
-    assert "bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA" == ticket
-    assert 7200 < client.session.get( f"{client.appid}_jsapi_card_ticket_expires_at")
-    assert client.session.get(f"{client.appid}_jsapi_card_ticket") == "bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA"
+    assert (
+        "bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA"
+        == ticket
+    )
+    assert 7200 < client.session.get(f"{client.appid}_jsapi_card_ticket_expires_at")
+    assert (
+        client.session.get(f"{client.appid}_jsapi_card_ticket")
+        == "bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA"
+    )
+
 
 def test_jsapi_card_ext(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -710,6 +714,7 @@ def test_jsapi_card_ext(httpx_mock: HTTPXMock):
 
     card_ext = json.loads(JsApiCardExt("asdf", code="4", openid="2").to_json())
     assert "code" in card_ext
+
 
 def test_jsapi_get_jsapi_add_card_params(httpx_mock: HTTPXMock):
     """微信签名测试工具：http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign"""
@@ -729,11 +734,14 @@ def test_jsapi_get_jsapi_add_card_params(httpx_mock: HTTPXMock):
         card_id=card_id,
         nonce_str=nonce_str,
     )
-    assert JsApiCardExt(
+    assert (
+        JsApiCardExt(
             signature="22dce6bad4db532d4a2ef82ca2ca7bbe1e10ef28",
             nonce_str=nonce_str,
             timestamp=timestamp,
-        ) == card_params
+        )
+        == card_params
+    )
     # 测试自定义code
     card_params = client.jsapi.get_jsapi_add_card_params(
         card_ticket=card_ticket,
@@ -742,12 +750,15 @@ def test_jsapi_get_jsapi_add_card_params(httpx_mock: HTTPXMock):
         nonce_str=nonce_str,
         code=code,
     )
-    assert JsApiCardExt(
+    assert (
+        JsApiCardExt(
             nonce_str=nonce_str,
             timestamp=timestamp,
             code=code,
             signature="2e9c6d12952246e071717d7baeab20c30420b5cd",
-        ) == card_params
+        )
+        == card_params
+    )
     # 测试指定用户领取
     card_params = client.jsapi.get_jsapi_add_card_params(
         card_ticket=card_ticket,
@@ -756,12 +767,15 @@ def test_jsapi_get_jsapi_add_card_params(httpx_mock: HTTPXMock):
         nonce_str=nonce_str,
         openid=openid,
     )
-    assert JsApiCardExt(
+    assert (
+        JsApiCardExt(
             nonce_str=nonce_str,
             timestamp=timestamp,
             openid=openid,
             signature="ded860a5dd4467312764bd86e544ad0579cbfad0",
-        ) == card_params
+        )
+        == card_params
+    )
     # 测试指定用户领取且自定义code
     card_params = client.jsapi.get_jsapi_add_card_params(
         card_ticket=card_ticket,
@@ -771,13 +785,18 @@ def test_jsapi_get_jsapi_add_card_params(httpx_mock: HTTPXMock):
         openid=openid,
         code=code,
     )
-    assert JsApiCardExt(
+    assert (
+        JsApiCardExt(
             nonce_str=nonce_str,
             timestamp=timestamp,
             openid=openid,
             code=code,
             signature="950dc1842852457ea573d4d6af34879c1ec093c8",
-        ) == card_params
+        )
+        == card_params
+    )
+
+
 def test_menu_get_menu_info(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
@@ -785,11 +804,13 @@ def test_menu_get_menu_info(httpx_mock: HTTPXMock):
     menu_info = client.menu.get_menu_info()
     assert 1 == menu_info["is_menu_open"]
 
+
 def test_message_get_autoreply_info(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     autoreply = client.message.get_autoreply_info()
     assert 1 == autoreply["is_autoreply_open"]
+
 
 def test_shakearound_apply_device_id(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -797,11 +818,13 @@ def test_shakearound_apply_device_id(httpx_mock: HTTPXMock):
     res = client.shakearound.apply_device_id(1, "test")
     assert 123 == res["apply_id"]
 
+
 def test_shakearound_update_device(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.shakearound.update_device("1234", comment="test")
     assert 0 == res["errcode"]
+
 
 def test_shakearound_bind_device_location(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -809,12 +832,14 @@ def test_shakearound_bind_device_location(httpx_mock: HTTPXMock):
     res = client.shakearound.bind_device_location(123, 1234)
     assert 0 == res["errcode"]
 
+
 def test_shakearound_search_device(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.shakearound.search_device(apply_id=123)
     assert 151 == res["total_count"]
     assert 2 == len(res["devices"])
+
 
 def test_shakearound_add_page(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -824,6 +849,7 @@ def test_shakearound_add_page(httpx_mock: HTTPXMock):
     )
     assert 28840 == res["page_id"]
 
+
 def test_shakearound_update_page(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
@@ -832,11 +858,13 @@ def test_shakearound_update_page(httpx_mock: HTTPXMock):
     )
     assert 28840 == res["page_id"]
 
+
 def test_shakearound_delete_page(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.shakearound.delete_page(123)
     assert 0 == res["errcode"]
+
 
 def test_shakearound_search_page(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -845,12 +873,16 @@ def test_shakearound_search_page(httpx_mock: HTTPXMock):
     assert 2 == res["total_count"]
     assert 2 == len(res["pages"])
 
+
 def test_shakearound_add_material(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     media_file = io.BytesIO(b"nothing")
     res = client.shakearound.add_material(media_file, "icon")
-    assert "http://shp.qpic.cn/wechat_shakearound_pic/0/1428377032e9dd2797018cad79186e03e8c5aec8dc/120" ==res["pic_url"]
+    assert (
+        "http://shp.qpic.cn/wechat_shakearound_pic/0/1428377032e9dd2797018cad79186e03e8c5aec8dc/120"
+        == res["pic_url"]
+    )
 
 
 def test_shakearound_bind_device_pages(httpx_mock: HTTPXMock):
@@ -859,12 +891,14 @@ def test_shakearound_bind_device_pages(httpx_mock: HTTPXMock):
     result = client.shakearound.bind_device_pages(123, 1, 1, 1234)
     assert 0 == result["errcode"]
 
+
 def test_shakearound_get_shake_info(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.shakearound.get_shake_info("123456")
     assert 14211 == res["page_id"]
     assert "oVDmXjp7y8aG2AlBuRpMZTb1-cmA" == res["openid"]
+
 
 def test_shakearound_get_device_statistics(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -874,6 +908,7 @@ def test_shakearound_get_device_statistics(httpx_mock: HTTPXMock):
     )
     assert 2 == len(res)
 
+
 def test_shakearound_get_page_statistics(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
@@ -881,6 +916,7 @@ def test_shakearound_get_page_statistics(httpx_mock: HTTPXMock):
         "2015-04-01 00:00:00", "2015-04-17 00:00:00", 1234
     )
     assert 2 == len(res)
+
 
 def test_material_get_count(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -891,15 +927,18 @@ def test_material_get_count(httpx_mock: HTTPXMock):
     assert 3 == res["image_count"]
     assert 4 == res["news_count"]
 
+
 def test_shakearound_get_apply_status(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.shakearound.get_apply_status(1234)
     assert 4 == len(res)
 
+
 def test_reraise_requests_exception(httpx_mock: HTTPXMock):
     def raise_requests_exception(request: httpx.Request):
-         return httpx.Response(404, request=request, content="404 not found")
+        return httpx.Response(404, request=request, content="404 not found")
+
     httpx_mock.add_callback(raise_requests_exception)
     client = WeChatClient(app_id, secret)
 
@@ -908,12 +947,14 @@ def test_reraise_requests_exception(httpx_mock: HTTPXMock):
     except WeChatClientException as e:
         assert 404, e.response.status_code
 
+
 def test_wifi_list_shops(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.wifi.list_shops()
     assert 16 == res["totalcount"]
     assert 1 == res["pageindex"]
+
 
 def test_wifi_get_shop(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -922,13 +963,13 @@ def test_wifi_get_shop(httpx_mock: HTTPXMock):
     assert 1 == res["bar_type"]
     assert 2 == res["ap_count"]
 
+
 def test_wifi_add_device(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
-    result = client.wifi.add_device(
-        123, "WX-test", "12345678", "00:1f:7a:ad:5c:a8"
-    )
+    result = client.wifi.add_device(123, "WX-test", "12345678", "00:1f:7a:ad:5c:a8")
     assert 0 == result["errcode"]
+
 
 def test_wifi_list_devices(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -937,11 +978,13 @@ def test_wifi_list_devices(httpx_mock: HTTPXMock):
     assert 2 == res["totalcount"]
     assert 1 == res["pageindex"]
 
+
 def test_wifi_delete_device(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     result = client.wifi.delete_device("00:1f:7a:ad:5c:a8")
     assert 0 == result["errcode"]
+
 
 def test_wifi_get_qrcode_url(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -949,11 +992,13 @@ def test_wifi_get_qrcode_url(httpx_mock: HTTPXMock):
     qrcode_url = client.wifi.get_qrcode_url(123, 0)
     assert "http://www.qq.com" == qrcode_url
 
+
 def test_wifi_set_homepage(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     result = client.wifi.set_homepage(123, 0)
     assert 0 == result["errcode"]
+
 
 def test_wifi_get_homepage(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -962,24 +1007,31 @@ def test_wifi_get_homepage(httpx_mock: HTTPXMock):
     assert 1 == res["template_id"]
     assert "http://wifi.weixin.qq.com/" == res["url"]
 
+
 def test_wifi_list_statistics(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.wifi.list_statistics("2015-05-01", "2015-05-02")
     assert 2 == len(res)
 
+
 def test_upload_mass_image(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     media_file = io.BytesIO(b"nothing")
     res = client.media.upload_mass_image(media_file)
-    assert "http://mmbiz.qpic.cn/mmbiz/gLO17UPS6FS2xsypf378iaNhWacZ1G1UplZYWEYfwvuU6Ont96b1roYs CNFwaRrSaKTPCUdBK9DgEHicsKwWCBRQ/0" == res
+    assert (
+        "http://mmbiz.qpic.cn/mmbiz/gLO17UPS6FS2xsypf378iaNhWacZ1G1UplZYWEYfwvuU6Ont96b1roYs CNFwaRrSaKTPCUdBK9DgEHicsKwWCBRQ/0"
+        == res
+    )
+
 
 def test_scan_get_merchant_info(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.scan.get_merchant_info()
     assert 8888 == res["verified_firm_code_list"][0]
+
 
 def test_scan_create_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -992,11 +1044,13 @@ def test_scan_create_product(httpx_mock: HTTPXMock):
     )
     assert "5g0B4A90aqc" == res["pid"]
 
+
 def test_scan_publish_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     result = client.scan.publish_product("ean13", "6900873042720")
     assert 0 == result["errcode"]
+
 
 def test_scan_unpublish_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -1004,11 +1058,13 @@ def test_scan_unpublish_product(httpx_mock: HTTPXMock):
     result = client.scan.unpublish_product("ean13", "6900873042720")
     assert 0 == result["errcode"]
 
+
 def test_scan_set_test_whitelist(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     result = client.scan.set_test_whitelist(["openid1"], ["messense"])
     assert 0 == result["errcode"]
+
 
 def test_scan_get_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -1016,11 +1072,13 @@ def test_scan_get_product(httpx_mock: HTTPXMock):
     result = client.scan.get_product("ean13", "6900873042720")
     assert "brand_info" in result
 
+
 def test_scan_list_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.scan.list_product()
     assert 2 == res["total"]
+
 
 def test_scan_update_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -1033,17 +1091,20 @@ def test_scan_update_product(httpx_mock: HTTPXMock):
     )
     assert "5g0B4A90aqc" == res["pid"]
 
+
 def test_scan_clear_product(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     result = client.scan.clear_product("ean13", "6900873042720")
     assert 0 == result["errcode"]
 
+
 def test_scan_check_ticket(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.scan.check_ticket("Ym1haDlvNXJqY3Ru1")
     assert "otAzGjrS4AYCmeJM1GhEOcHXXTAo" == res["openid"]
+
 
 def test_change_openid(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
@@ -1057,6 +1118,7 @@ def test_change_openid(httpx_mock: HTTPXMock):
     assert "o2FwqwI9xCsVadFah_HtpPfaR-X4" == res[0]["new_openid"]
     assert "ori_openid error" == res[1]["err_msg"]
 
+
 def test_code_to_session(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
@@ -1066,11 +1128,13 @@ def test_code_to_session(httpx_mock: HTTPXMock):
     assert "o16wA0b4AZKzgVJR3MBwoUdTfU_E" == res["openid"]
     assert "or4zX05h_Ykt4ju0TUfx3CQsvfTo" == res["unionid"]
 
+
 def test_get_phone_number(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatClient(app_id, secret)
     res = client.wxa.get_phone_number("code")
     assert "13123456789" == res["phone_info"]["purePhoneNumber"]
+
 
 def test_client_expires_at_consistency(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)

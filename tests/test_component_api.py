@@ -2,9 +2,10 @@
 import os
 import json
 import inspect
-import unittest
 
-from httmock import urlmatch, HTTMock, response
+import pytest
+import httpx
+from pytest_httpx import HTTPXMock
 
 from wechatpy.component import WeChatComponent, ComponentOAuth
 from wechatpy.exceptions import WeChatClientException
@@ -14,9 +15,13 @@ _TESTS_PATH = os.path.abspath(os.path.dirname(__file__))
 _FIXTURE_PATH = os.path.join(_TESTS_PATH, "fixtures", "component")
 
 
-@urlmatch(netloc=r"(.*\.)?api\.weixin\.qq\.com$")
-def wechat_api_mock(url, request):
-    path = url.path.replace("/cgi-bin/component/", "").replace("/", "_")
+@pytest.fixture
+def assert_all_responses_were_requested() -> bool:
+    return False
+
+
+def custom_response(request: httpx.Request):
+    path = request.url.path.replace("/cgi-bin/component/", "").replace("/", "_")
     res_file = os.path.join(_FIXTURE_PATH, f"{path}.json")
     content = {
         "errcode": 99999,
@@ -26,126 +31,181 @@ def wechat_api_mock(url, request):
     try:
         with open(res_file, "rb") as f:
             content = json.loads(f.read().decode("utf-8"))
-    except (IOError, ValueError):
-        pass
-    return response(200, content, headers, request=request)
+    except (IOError, ValueError) as e:
+        content["errmsg"] = f"Loads fixture {res_file} failed, error: {e}"
+    return httpx.Response(
+        status_code=200, json=content, request=request, headers=headers
+    )
 
 
-class WeChatComponentTestCase(unittest.TestCase):
-    app_id = "123456"
-    app_secret = "123456"
-    token = "sdfusfsssdc"
-    encoding_aes_key = "yguy3495y79o34vod7843933902h9gb2834hgpB90rg"
-
-    def setUp(self):
-        self.client = WeChatComponent(
-            self.app_id, self.app_secret, self.token, self.encoding_aes_key
-        )
-
-    def test_fetch_access_token_is_method(self):
-        self.assertTrue(inspect.ismethod(self.client.fetch_access_token))
-
-    def test_fetch_access_token(self):
-        with HTTMock(wechat_api_mock):
-            token = self.client.fetch_access_token()
-            self.assertEqual("1234567890", token["component_access_token"])
-            self.assertEqual(7200, token["expires_in"])
-            self.assertEqual("1234567890", self.client.access_token)
-
-    def test_create_preauthcode(self):
-        with HTTMock(wechat_api_mock):
-            result = self.client.create_preauthcode()
-            self.assertEqual("1234567890", result["pre_auth_code"])
-            self.assertEqual(600, result["expires_in"])
-
-    def test_query_auth(self):
-        authorization_code = "1234567890"
-        with HTTMock(wechat_api_mock):
-            result = self.client.query_auth(authorization_code)
-            self.assertEqual(
-                "wxf8b4f85f3a794e77", result["authorization_info"]["authorizer_appid"]
-            )
-
-    def test_refresh_authorizer_token(self):
-        appid = "appid"
-        refresh_token = "refresh_token"
-        with HTTMock(wechat_api_mock):
-            result = self.client.refresh_authorizer_token(appid, refresh_token)
-            self.assertEqual("1234567890", result["authorizer_access_token"])
-            self.assertEqual("123456789", result["authorizer_refresh_token"])
-            self.assertEqual(7200, result["expires_in"])
-
-    def test_get_authorizer_info(self):
-        authorizer_appid = "wxf8b4f85f3a794e77"
-        with HTTMock(wechat_api_mock):
-            result = self.client.get_authorizer_info(authorizer_appid)
-            self.assertEqual("paytest01", result["authorizer_info"]["alias"])
-
-    def test_get_authorizer_option(self):
-        with HTTMock(wechat_api_mock):
-            appid = "wxf8b4f85f3a794e77"
-            result = self.client.get_authorizer_option(appid, "voice_recognize")
-            self.assertEqual("voice_recognize", result["option_name"])
-            self.assertEqual("1", result["option_value"])
-
-    def test_set_authorizer_option(self):
-        with HTTMock(wechat_api_mock):
-            appid = "wxf8b4f85f3a794e77"
-            result = self.client.set_authorizer_option(appid, "voice_recognize", "0")
-            self.assertEqual(0, result["errcode"])
+app_id = "123456"
+app_secret = "123456"
+token = "sdfusfsssdc"
+encoding_aes_key = "yguy3495y79o34vod7843933902h9gb2834hgpB90rg"
 
 
-class ComponentOAuthTestCase(unittest.TestCase):
-    app_id = "123456"
-    component_appid = "456789"
-    component_appsecret = "123456"
-    component_token = "654321"
-    encoding_aes_key = "yguy3495y79o34vod7843933902h9gb2834hgpB90rg"
-    redirect_uri = "http://localhost"
+def test_fetch_access_token_is_method(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    assert inspect.ismethod(client.fetch_access_token)
 
-    def setUp(self):
-        component = WeChatComponent(
-            self.component_appid,
-            self.component_appsecret,
-            self.component_token,
-            self.encoding_aes_key,
-        )
-        self.oauth = ComponentOAuth(
-            component,
-            self.app_id,
-        )
 
-    def test_get_authorize_url(self):
-        authorize_url = self.oauth.get_authorize_url(self.redirect_uri)
-        self.assertEqual(
-            "https://open.weixin.qq.com/connect/oauth2/authorize?appid=123456&redirect_uri=http%3A%2F%2Flocalhost"
-            "&response_type=code&scope=snsapi_base&component_appid=456789#wechat_redirect",
-            authorize_url,
-        )
+def test_fetch_access_token(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    token = client.fetch_access_token()
+    assert token["component_access_token"] == "1234567890"
+    assert 7200 == token["expires_in"]
+    assert "1234567890" == client.access_token
 
-    def test_fetch_access_token(self):
-        with HTTMock(wechat_api_mock):
-            res = self.oauth.fetch_access_token("123456")
-            self.assertEqual("ACCESS_TOKEN", res["access_token"])
 
-    def test_refresh_access_token(self):
-        with HTTMock(wechat_api_mock):
-            res = self.oauth.refresh_access_token("123456")
-            self.assertEqual("ACCESS_TOKEN", res["access_token"])
+def test_create_preauthcode(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    result = client.create_preauthcode()
+    assert "1234567890" == result["pre_auth_code"]
+    assert 600 == result["expires_in"]
 
-    def test_get_user_info(self):
-        with HTTMock(wechat_api_mock):
-            self.oauth.fetch_access_token("123456")
-            res = self.oauth.get_user_info()
-            self.assertEqual("OPENID", res["openid"])
 
-    def test_reraise_requests_exception(self):
-        @urlmatch(netloc=r"(.*\.)?api\.weixin\.qq\.com$")
-        def _wechat_api_mock(url, request):
-            return {"status_code": 404, "content": "404 not found"}
+def test_query_auth(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    authorization_code = "1234567890"
+    result = client.query_auth(authorization_code)
+    assert "wxf8b4f85f3a794e77" == result["authorization_info"]["authorizer_appid"]
 
-        try:
-            with HTTMock(_wechat_api_mock):
-                self.oauth.fetch_access_token("123456")
-        except WeChatClientException as e:
-            self.assertEqual(404, e.response.status_code)
+
+def test_refresh_authorizer_token(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    appid = "appid"
+    refresh_token = "refresh_token"
+
+    result = client.refresh_authorizer_token(appid, refresh_token)
+    assert "1234567890" == result["authorizer_access_token"]
+    assert "123456789" == result["authorizer_refresh_token"]
+    assert 7200 == result["expires_in"]
+
+
+def test_get_authorizer_info(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    authorizer_appid = "wxf8b4f85f3a794e77"
+
+    result = client.get_authorizer_info(authorizer_appid)
+    assert "paytest01" == result["authorizer_info"]["alias"]
+
+
+def test_get_authorizer_option(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    appid = "wxf8b4f85f3a794e77"
+    result = client.get_authorizer_option(appid, "voice_recognize")
+    assert "voice_recognize" == result["option_name"]
+    assert "1" == result["option_value"]
+
+
+def test_set_authorizer_option(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
+    appid = "wxf8b4f85f3a794e77"
+    result = client.set_authorizer_option(appid, "voice_recognize", "0")
+    assert 0 == result["errcode"]
+
+
+app_id = "123456"
+component_appid = "456789"
+component_appsecret = "123456"
+component_token = "654321"
+encoding_aes_key = "yguy3495y79o34vod7843933902h9gb2834hgpB90rg"
+redirect_uri = "http://localhost"
+
+
+def test_get_authorize_url(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    component = WeChatComponent(
+        component_appid,
+        component_appsecret,
+        component_token,
+        encoding_aes_key,
+    )
+    oauth = ComponentOAuth(
+        component,
+        app_id,
+    )
+    authorize_url = oauth.get_authorize_url(redirect_uri)
+    assert (
+        "https://open.weixin.qq.com/connect/oauth2/authorize?appid=123456&redirect_uri=http%3A%2F%2Flocalhost"
+        "&response_type=code&scope=snsapi_base&component_appid=456789#wechat_redirect"
+        == authorize_url
+    )
+
+
+def test_fetch_access_token(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    component = WeChatComponent(
+        component_appid,
+        component_appsecret,
+        component_token,
+        encoding_aes_key,
+    )
+    oauth = ComponentOAuth(
+        component,
+        app_id,
+    )
+    res = oauth.fetch_access_token("123456")
+    assert "ACCESS_TOKEN" == res["access_token"]
+
+
+def test_refresh_access_token(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    component = WeChatComponent(
+        component_appid,
+        component_appsecret,
+        component_token,
+        encoding_aes_key,
+    )
+    oauth = ComponentOAuth(
+        component,
+        app_id,
+    )
+    res = oauth.refresh_access_token("123456")
+    assert "ACCESS_TOKEN" == res["access_token"]
+
+
+def test_get_user_info(httpx_mock: HTTPXMock):
+    httpx_mock.add_callback(custom_response)
+    component = WeChatComponent(
+        component_appid,
+        component_appsecret,
+        component_token,
+        encoding_aes_key,
+    )
+    oauth = ComponentOAuth(
+        component,
+        app_id,
+    )
+    oauth.fetch_access_token("123456")
+    res = oauth.get_user_info()
+    assert "OPENID" == res["openid"]
+
+
+def test_reraise_requests_exception(httpx_mock: HTTPXMock):
+    def not_found_response(request: httpx.Request):
+        return httpx.Response(status_code=404, request=request, content="404 not found")
+
+    httpx_mock.add_callback(not_found_response)
+    component = WeChatComponent(
+        component_appid,
+        component_appsecret,
+        component_token,
+        encoding_aes_key,
+    )
+    oauth = ComponentOAuth(
+        component,
+        app_id,
+    )
+    try:
+        oauth.fetch_access_token("123456")
+    except WeChatClientException as e:
+        assert 404 == e.response.status_code
