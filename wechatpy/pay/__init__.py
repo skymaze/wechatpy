@@ -3,7 +3,7 @@
 import inspect
 import logging
 
-import requests
+import httpx
 import xmltodict
 from xml.parsers.expat import ExpatError
 from optionaldict import optionaldict
@@ -99,18 +99,7 @@ class WeChatPay:
         self.timeout = timeout
         self.sandbox = sandbox
         self._sandbox_api_key = None
-        self._http = requests.Session()
-        if mch_cert and mch_cert.endswith(".p12"):
-            from requests_pkcs12 import Pkcs12Adapter
-
-            # 商户 .p12 格式证书，证书密码默认为商户 ID
-            self._http.mount(
-                self.API_BASE_URL,
-                Pkcs12Adapter(
-                    pkcs12_filename=self.mch_cert, pkcs12_password=self.mch_id
-                ),
-            )
-            self._using_pkcs12_cert = True
+        self._http = httpx.Client()
 
     def _fetch_sandbox_api_key(self):
         nonce_str = random_string(32)
@@ -168,7 +157,7 @@ class WeChatPay:
         res = self._http.request(method=method, url=url, **kwargs)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatPayException(
                 return_code=None,
                 client=self,

@@ -8,7 +8,7 @@
 
 import json
 from urllib.parse import quote
-import requests
+import httpx
 from wechatpy.exceptions import WeChatOAuthException
 
 
@@ -31,7 +31,7 @@ class WeChatOAuth:
         self.redirect_uri = redirect_uri
         self.scope = scope
         self.state = state
-        self._http = requests.Session()
+        self._http = httpx.Client()
 
     def _request(self, method: str, url_or_endpoint: str, **kwargs) -> dict:
         if not url_or_endpoint.startswith(("http://", "https://")):
@@ -47,7 +47,7 @@ class WeChatOAuth:
         res = self._http.request(method=method, url=url, **kwargs)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatOAuthException(
                 errcode=None,
                 errmsg=None,

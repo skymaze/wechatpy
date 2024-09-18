@@ -187,7 +187,7 @@ class WeChatWxa(BaseWeChatAPI):
         详情请参考
         https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&id=open1489140610_Uavc4
 
-        :rtype: requests.Response
+        :rtype: httpx.Response
         """
         return self._get("wxa/get_qrcode")
 
@@ -211,7 +211,7 @@ class WeChatWxa(BaseWeChatAPI):
                                 is_expire 为 true 且 expire_type 为 1 时必填。
         :param jump_wxa, 跳转到的目标小程序信息。
 
-        :rtype: requests.Response
+        :rtype: httpx.Response
         """
         return self._post(
             "wxa/generatescheme",
@@ -248,7 +248,7 @@ class WeChatWxa(BaseWeChatAPI):
                                 最长间隔天数为365天。is_expire 为 true 且 expire_type 为 1 时必填
         :param cloud_base, 云开发静态网站自定义 H5 配置参数，可配置中转的云开发 H5 页面。不填默认用官方 H5 页面。
 
-        :rtype: requests.Response
+        :rtype: httpx.Response
         """
         return self._post(
             "wxa/generate_urllink",

@@ -459,7 +459,7 @@ Version 1.0.0
 + 增加 Session 机制，目前只用来存储 access_token 等，支持 Redis, Memcached, 内存和 Shove 等存储 backend.
 + 增加微信门店接口
 + 增加摇一摇周边事件，添加页面接口增加 ``page_url`` 参数
-+ reraise ``requests.RequestException`` 为 ``WeChatClientException``
++ reraise ``httpx.HTTPStatusError`` 为 ``WeChatClientException``
 + 修复继承 ``WeChatClient`` 导致不能正常工作的问题
 + 企业号增加素材管理接口
 + 企业号增加 JS SDK API

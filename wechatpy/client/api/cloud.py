@@ -3,7 +3,7 @@
 import json
 from enum import IntEnum
 
-import requests
+import httpx
 
 from wechatpy.client.api.base import BaseWeChatAPI
 
@@ -329,7 +329,7 @@ class WeChatCloud(BaseWeChatAPI):
             signature = res["authorization"]
             token = res["token"]
             cos_file_id = res["cos_file_id"]
-            upload_res = requests.post(
+            upload_res = httpx.post(
                 res["url"],
                 files={
                     "key": path,

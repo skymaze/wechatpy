@@ -71,7 +71,7 @@ wechatpy 希望支持的 Python 版本有 3.5, 3.6, 3.7 和 3.8。
 
 ## Pull Requests
 
-在您完成上述所有步骤后，您可以在 [wechatpy](https://github.com/wechatpy/wechatpy) 项目上提交您的 Pull Requests.
+在您完成上述所有步骤后，您可以在 [wechatpy](https://github.com/wechatpy/wechatpy) 项目上提交您的 Pull httpx.
 
 在您提交 Pull Requests 之后，[GitHub Actions](https://github.com/wechatpy/wechatpy/actions?query=workflow%3ACI) 会进行全面的自动化测试（测试所有支持的 Python 环境）。
 测试成功后 [Codecov](https://codecov.io/github/wechatpy/wechatpy?branch=master) 会给出 coverage 报告，

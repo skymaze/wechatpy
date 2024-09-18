@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-import requests
+import httpx
 
 from wechatpy.client.api.base import BaseWeChatAPI
 
@@ -87,4 +87,4 @@ class WeChatMedia(BaseWeChatAPI):
         :param media_id: 媒体文件id
         :return: requests 的 Response 实例
         """
-        return requests.get(self.get_url(media_id))
+        return httpx.get(self.get_url(media_id))

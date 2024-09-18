@@ -13,7 +13,7 @@ import logging
 import time
 from urllib.parse import quote
 
-import requests
+import httpx
 import xmltodict
 
 from wechatpy.client import WeChatComponentClient
@@ -50,7 +50,7 @@ class BaseWeChatComponent:
         :param component_token: 公众号消息校验Token
         :param encoding_aes_key: 公众号消息加解密Key
         """
-        self._http = requests.Session()
+        self._http = httpx.Client()
         self.component_appid = component_appid
         self.component_appsecret = component_appsecret
         self.expires_at = None
@@ -84,7 +84,7 @@ class BaseWeChatComponent:
         res = self._http.request(method=method, url=url, **kwargs)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatClientException(
                 errcode=None,
                 errmsg=None,
@@ -153,7 +153,7 @@ class BaseWeChatComponent:
         res = self._http.post(url=url, data=data)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatClientException(
                 errcode=None,
                 errmsg=None,
@@ -434,7 +434,7 @@ class ComponentOAuth:
         :param component: WeChatComponent
         :param app_id: 微信公众号 app_id
         """
-        self._http = requests.Session()
+        self._http = httpx.Client()
         self.app_id = app_id
         self.component = component
 
@@ -543,7 +543,7 @@ class ComponentOAuth:
         res = self._http.request(method=method, url=url, **kwargs)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatOAuthException(
                 errcode=None,
                 errmsg=None,

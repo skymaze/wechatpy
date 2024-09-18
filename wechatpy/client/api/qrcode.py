@@ -2,7 +2,7 @@
 
 from urllib.parse import quote
 
-import requests
+import httpx
 
 from wechatpy.client.api.base import BaseWeChatAPI
 
@@ -61,7 +61,7 @@ class WeChatQRCode(BaseWeChatAPI):
         """
         if isinstance(ticket, dict):
             ticket = ticket["ticket"]
-        return requests.get(
+        return httpx.get(
             url="https://mp.weixin.qq.com/cgi-bin/showqrcode", params={"ticket": ticket}
         )
 

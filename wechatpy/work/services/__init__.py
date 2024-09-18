@@ -2,7 +2,7 @@
 import json
 import time
 import logging
-import requests
+import httpx
 
 from wechatpy.client.base import BaseWeChatClient
 from wechatpy.exceptions import WeChatClientException
@@ -48,7 +48,7 @@ class WeChatServiceClient(BaseWeChatClient):
         res = self._http.post(url=url, json=params)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatClientException(
                 errcode=None,
                 errmsg=None,
@@ -99,7 +99,7 @@ class WeChatServiceClient(BaseWeChatClient):
         res = self._http.request(method=method, url=url, **kwargs)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatClientException(
                 errcode=None,
                 errmsg=None,

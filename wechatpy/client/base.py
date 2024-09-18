@@ -4,7 +4,7 @@ import time
 import inspect
 import logging
 
-import requests
+import httpx
 
 from wechatpy.constants import WeChatErrorCode
 from wechatpy.session.memorystorage import MemoryStorage
@@ -34,7 +34,7 @@ class BaseWeChatClient:
     def __init__(
         self, appid, access_token=None, session=None, timeout=None, auto_retry=True
     ):
-        self._http = requests.Session()
+        self._http = httpx.Client()
         self.appid = appid
         self.session = session or MemoryStorage()
         self.timeout = timeout
@@ -83,7 +83,7 @@ class BaseWeChatClient:
         res = self._http.request(method=method, url=url, **kwargs)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatClientException(
                 errcode=None,
                 errmsg=None,
@@ -163,7 +163,7 @@ class BaseWeChatClient:
         res = self._http.get(url=url, params=params)
         try:
             res.raise_for_status()
-        except requests.RequestException as reqe:
+        except httpx.HTTPStatusError as reqe:
             raise WeChatClientException(
                 errcode=None,
                 errmsg=None,

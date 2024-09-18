@@ -6,6 +6,7 @@
     Basic exceptions definition.
 """
 from typing import Any, Optional
+import httpx
 
 
 class WeChatException(Exception):
@@ -36,8 +37,8 @@ class WeChatClientException(WeChatException):
         errcode: int,
         errmsg: str,
         client: Optional[Any] = None,
-        request: Optional[Any] = None,
-        response: Optional[Any] = None,
+        request: Optional[httpx.Request] = None,
+        response: Optional[httpx.Response] = None,
     ) -> None:
         super().__init__(errcode, errmsg)
         self.client = client
