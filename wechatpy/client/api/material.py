@@ -23,7 +23,9 @@ class WeChatMaterial(BaseWeChatAPI):
             assert introduction, "Video introduction must be set"
             description = {"title": title, "introduction": introduction}
             params["description"] = json.dumps(description)
-        return self._post("material/add_material", params=params, files={"media": media_file})
+        return self._post(
+            "material/add_material", params=params, files={"media": media_file}
+        )
 
     def get(self, media_id):
         """
@@ -41,7 +43,11 @@ class WeChatMaterial(BaseWeChatAPI):
                 return res["news_item"]
             return res
 
-        return self._post("material/get_material", data={"media_id": media_id}, result_processor=_processor)
+        return self._post(
+            "material/get_material",
+            data={"media_id": media_id},
+            result_processor=_processor,
+        )
 
     def delete(self, media_id):
         """
@@ -65,7 +71,10 @@ class WeChatMaterial(BaseWeChatAPI):
         :param count: 返回素材的数量，取值在1到20之间
         :return: 返回的 JSON 数据包
         """
-        return self._post("material/batchget_material", data={"type": media_type, "offset": offset, "count": count})
+        return self._post(
+            "material/batchget_material",
+            data={"type": media_type, "offset": offset, "count": count},
+        )
 
     def get_count(self):
         """
@@ -82,13 +91,17 @@ class WeChatMaterial(BaseWeChatAPI):
         打开已群发文章评论
         https://mp.weixin.qq.com/wiki?id=mp1494572718_WzHIY
         """
-        return self._post("comment/open", data={"msg_data_id": msg_data_id, "index": index})
+        return self._post(
+            "comment/open", data={"msg_data_id": msg_data_id, "index": index}
+        )
 
     def close_comment(self, msg_data_id, index=1):
         """
         关闭已群发文章评论
         """
-        return self._post("comment/close", data={"msg_data_id": msg_data_id, "index": index})
+        return self._post(
+            "comment/close", data={"msg_data_id": msg_data_id, "index": index}
+        )
 
     def list_comment(self, msg_data_id, index=1, begin=0, count=50, type=0):
         """
@@ -96,7 +109,13 @@ class WeChatMaterial(BaseWeChatAPI):
         """
         return self._post(
             "comment/list",
-            data={"msg_data_id": msg_data_id, "index": index, "begin": begin, "count": count, "type": type},
+            data={
+                "msg_data_id": msg_data_id,
+                "index": index,
+                "begin": begin,
+                "count": count,
+                "type": type,
+            },
         )
 
     def markelect_comment(self, msg_data_id, index, user_comment_id):
@@ -105,7 +124,11 @@ class WeChatMaterial(BaseWeChatAPI):
         """
         return self._post(
             "comment/markelect",
-            data={"msg_data_id": msg_data_id, "index": index, "user_comment_id": user_comment_id},
+            data={
+                "msg_data_id": msg_data_id,
+                "index": index,
+                "user_comment_id": user_comment_id,
+            },
         )
 
     def unmarkelect_comment(self, msg_data_id, index, user_comment_id):
@@ -114,7 +137,11 @@ class WeChatMaterial(BaseWeChatAPI):
         """
         return self._post(
             "comment/unmarkelect",
-            data={"msg_data_id": msg_data_id, "index": index, "user_comment_id": user_comment_id},
+            data={
+                "msg_data_id": msg_data_id,
+                "index": index,
+                "user_comment_id": user_comment_id,
+            },
         )
 
     def delete_comment(self, msg_data_id, index, user_comment_id):
@@ -123,7 +150,11 @@ class WeChatMaterial(BaseWeChatAPI):
         """
         return self._post(
             "comment/delete",
-            data={"msg_data_id": msg_data_id, "index": index, "user_comment_id": user_comment_id},
+            data={
+                "msg_data_id": msg_data_id,
+                "index": index,
+                "user_comment_id": user_comment_id,
+            },
         )
 
     def add_reply_comment(self, msg_data_id, index, user_comment_id, content):
@@ -132,7 +163,12 @@ class WeChatMaterial(BaseWeChatAPI):
         """
         return self._post(
             "comment/reply/add",
-            data={"msg_data_id": msg_data_id, "index": index, "user_comment_id": user_comment_id, "content": content},
+            data={
+                "msg_data_id": msg_data_id,
+                "index": index,
+                "user_comment_id": user_comment_id,
+                "content": content,
+            },
         )
 
     def delete_reply_comment(self, msg_data_id, index, user_comment_id):
@@ -141,5 +177,9 @@ class WeChatMaterial(BaseWeChatAPI):
         """
         return self._post(
             "comment/reply/delete",
-            data={"msg_data_id": msg_data_id, "index": index, "user_comment_id": user_comment_id},
+            data={
+                "msg_data_id": msg_data_id,
+                "index": index,
+                "user_comment_id": user_comment_id,
+            },
         )

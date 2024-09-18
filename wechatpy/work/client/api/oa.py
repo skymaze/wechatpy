@@ -37,7 +37,13 @@ class WeChatOA(BaseWeChatAPI):
         :return:
         """
         data = optionaldict(
-            {"starttime": str(start_time), "endtime": str(end_time), "cursor": cursor, "size": size, "filters": filters}
+            {
+                "starttime": str(start_time),
+                "endtime": str(end_time),
+                "cursor": cursor,
+                "size": size,
+                "filters": filters,
+            }
         )
 
         return self._post("oa/getapprovalinfo", data=data)
@@ -93,7 +99,11 @@ class WeChatOA(BaseWeChatAPI):
         return self._post("oa/applyevent", data=data)
 
     def get_dial_record(
-        self, start_time: Optional[int] = None, end_time: Optional[int] = None, offset: int = 0, limit: int = 100
+        self,
+        start_time: Optional[int] = None,
+        end_time: Optional[int] = None,
+        offset: int = 0,
+        limit: int = 100,
     ) -> dict:
         """
         获取公费电话拨打记录
@@ -119,10 +129,17 @@ class WeChatOA(BaseWeChatAPI):
         if start_time and end_time and end_time <= start_time:
             raise ValueError("the end time must be greater than the beginning time")
 
-        data = {"start_time": start_time, "end_time": end_time, "offset": offset, "limit": limit}
+        data = {
+            "start_time": start_time,
+            "end_time": end_time,
+            "offset": offset,
+            "limit": limit,
+        }
         return self._post("dial/get_dial_record", data=data)
 
-    def get_checkin_data(self, data_type: int, start_time: int, end_time: int, userid_list: List[str]) -> dict:
+    def get_checkin_data(
+        self, data_type: int, start_time: int, end_time: int, userid_list: List[str]
+    ) -> dict:
         """
         获取打卡数据
         https://work.weixin.qq.com/api/doc/90000/90135/90262
@@ -155,7 +172,9 @@ class WeChatOA(BaseWeChatAPI):
         }
         return self._post("checkin/getcheckindata", data=data)
 
-    def get_checkin_daydata(self, start_time: int, end_time: int, userid_list: List[str]) -> dict:
+    def get_checkin_daydata(
+        self, start_time: int, end_time: int, userid_list: List[str]
+    ) -> dict:
         """
         获取打卡日报数据
         https://developer.work.weixin.qq.com/document/path/93374
@@ -180,7 +199,9 @@ class WeChatOA(BaseWeChatAPI):
         }
         return self._post("checkin/getcheckin_daydata", data=data)
 
-    def get_checkin_monthdata(self, start_time: int, end_time: int, userid_list: List[str]) -> dict:
+    def get_checkin_monthdata(
+        self, start_time: int, end_time: int, userid_list: List[str]
+    ) -> dict:
         """
         获取打卡月报数据
         https://developer.work.weixin.qq.com/document/path/93374
@@ -230,7 +251,9 @@ class WeChatOA(BaseWeChatAPI):
         data = {"datetime": datetime, "useridlist": userid_list}
         return self._post("checkin/getcheckinoption", data=data)
 
-    def get_checkin_schedu_list(self, start_time: int, end_time: int, userid_list: List[str]) -> dict:
+    def get_checkin_schedu_list(
+        self, start_time: int, end_time: int, userid_list: List[str]
+    ) -> dict:
         """
         获取打卡人员排班信息
         https://developer.work.weixin.qq.com/document/path/93380
@@ -244,7 +267,9 @@ class WeChatOA(BaseWeChatAPI):
             raise ValueError("the end time must be greater than the beginning time")
 
         if end_time - start_time > 31 * 86400:
-            raise ValueError("the difference between the start_time and the end_time cannot be more than one month")
+            raise ValueError(
+                "the difference between the start_time and the end_time cannot be more than one month"
+            )
 
         if not userid_list:
             raise ValueError("the userid_list can't be an empty list")
@@ -256,7 +281,9 @@ class WeChatOA(BaseWeChatAPI):
         }
         return self._post("checkin/getcheckinschedulist", data=data)
 
-    def set_checkin_schedu_list(self, group_id: int, items: list, yearmonth: int) -> dict:
+    def set_checkin_schedu_list(
+        self, group_id: int, items: list, yearmonth: int
+    ) -> dict:
         """
         为打卡人员排班
         https://developer.work.weixin.qq.com/document/path/93385
@@ -290,7 +317,11 @@ class WeChatOA(BaseWeChatAPI):
         return self._post("checkin/addcheckinuserface", data=data)
 
     def get_hardware_checkin_data(
-        self, start_time: int, end_time: int, userid_list: List[str], filter_type: int = 1
+        self,
+        start_time: int,
+        end_time: int,
+        userid_list: List[str],
+        filter_type: int = 1,
     ) -> dict:
         """
         获取设备打卡数据
@@ -310,7 +341,9 @@ class WeChatOA(BaseWeChatAPI):
             raise ValueError("the end time must be greater than the beginning time")
 
         if end_time - start_time > 31 * 86400:
-            raise ValueError("the difference between the start_time and the end_time cannot be more than one month")
+            raise ValueError(
+                "the difference between the start_time and the end_time cannot be more than one month"
+            )
 
         if not userid_list:
             raise ValueError("the userid_list can't be an empty list")
@@ -337,7 +370,9 @@ class WeChatOA(BaseWeChatAPI):
         data = {"thirdNo": third_no}
         return self._post("corp/getopenapprovaldata", data=data)
 
-    def get_journal_record_list(self, start_time: int, end_time: int, cursor: int, limit: int, filters=None) -> dict:
+    def get_journal_record_list(
+        self, start_time: int, end_time: int, cursor: int, limit: int, filters=None
+    ) -> dict:
         """
         批量获取汇报记录单号
         https://developer.work.weixin.qq.com/document/path/93393
@@ -352,7 +387,9 @@ class WeChatOA(BaseWeChatAPI):
             raise ValueError("the end time must be greater than the beginning time")
 
         if end_time - start_time > 31 * 86400:
-            raise ValueError("the difference between the start_time and the end_time cannot be more than one month")
+            raise ValueError(
+                "the difference between the start_time and the end_time cannot be more than one month"
+            )
 
         data = {
             "starttime": start_time,
@@ -371,9 +408,13 @@ class WeChatOA(BaseWeChatAPI):
 
         :param journal_uuid: 汇报记录单号
         """
-        return self._post("oa/journal/get_record_detail", data={"journaluuid": journal_uuid})
+        return self._post(
+            "oa/journal/get_record_detail", data={"journaluuid": journal_uuid}
+        )
 
-    def get_journal_stat_list(self, start_time: int, end_time: int, template_id: str) -> dict:
+    def get_journal_stat_list(
+        self, start_time: int, end_time: int, template_id: str
+    ) -> dict:
         """
         获取汇报统计数据
         https://developer.work.weixin.qq.com/document/path/93395
@@ -382,7 +423,11 @@ class WeChatOA(BaseWeChatAPI):
         :param end_time: 结束时间，时间区间最大长度为一年
         :param template_id: 汇报表单id
         """
-        data = {"template_id": template_id, "starttime": start_time, "endtime": end_time}
+        data = {
+            "template_id": template_id,
+            "starttime": start_time,
+            "endtime": end_time,
+        }
         return self._post("oa/journal/get_stat_list", data=data)
 
     def add_meetingroom(
@@ -438,7 +483,12 @@ class WeChatOA(BaseWeChatAPI):
 
         - 如果需要为会议室设置位置信息，则必须同时填写城市（city），楼宇（building）和楼层(floor)三个参数。
         """
-        data = {"city": city, "building": building, "floor": floor, "equipment": equipment}
+        data = {
+            "city": city,
+            "building": building,
+            "floor": floor,
+            "equipment": equipment,
+        }
         data = {k: v for k, v in data.items() if v is not None}
         return self._post("oa/meetingroom/list", data=data)
 
@@ -570,7 +620,9 @@ class WeChatOA(BaseWeChatAPI):
             data["keep_schedule"] = keep_schedule
         return self._post("oa/meetingroom/cancel_book", data=data)
 
-    def get_booking_info_by_meeting_id(self, meetingroom_id: int, meeting_id: str) -> dict:
+    def get_booking_info_by_meeting_id(
+        self, meetingroom_id: int, meeting_id: str
+    ) -> dict:
         """
         根据会议ID查询会议室的预定信息
         https://developer.work.weixin.qq.com/document/path/93619

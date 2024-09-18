@@ -42,7 +42,9 @@ class WeChatCloud(BaseWeChatAPI):
             result_processor=lambda x: json.loads(x["resp_data"]),
         )
 
-    def db_import(self, env, collection, file_path, file_type, conflict_mode, stop_on_error=True):
+    def db_import(
+        self, env, collection, file_path, file_type, conflict_mode, stop_on_error=True
+    ):
         """
         数据库导入
 

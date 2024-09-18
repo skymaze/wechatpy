@@ -17,7 +17,9 @@ class MerchantOrder(BaseWeChatAPI):
         return res
 
     def get_by_filter(self, status=None, begin_time=None, end_time=None):
-        filter_dict = optionaldict(status=status, begintime=begin_time, endtime=end_time)
+        filter_dict = optionaldict(
+            status=status, begintime=begin_time, endtime=end_time
+        )
 
         res = self._post(
             "merchant/order/getbyfilter",

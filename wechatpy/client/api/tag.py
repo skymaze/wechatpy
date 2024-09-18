@@ -49,7 +49,9 @@ class WeChatTag(BaseWeChatAPI):
 
         """
         name = to_text(name)
-        return self._post("tags/update", data={"tag": {"id": int(tag_id), "name": name}})
+        return self._post(
+            "tags/update", data={"tag": {"id": int(tag_id), "name": name}}
+        )
 
     def delete(self, tag_id):
         """

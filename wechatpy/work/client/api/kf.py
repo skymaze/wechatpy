@@ -52,7 +52,9 @@ class WeChatKF(BaseWeChatAPI):
         }
         return self._post("kf/service_state/get", data=data)
 
-    def trans_service_state(self, open_kfid, external_userid, service_state, servicer_userid=""):
+    def trans_service_state(
+        self, open_kfid, external_userid, service_state, servicer_userid=""
+    ):
         """
         变更会话状态
 
@@ -160,7 +162,9 @@ class WeChatKF(BaseWeChatAPI):
         """
         return self._get("kf/customer/get_upgrade_service_config")
 
-    def upgrade_service(self, open_kfid, external_userid, service_type, member=None, groupchat=None):
+    def upgrade_service(
+        self, open_kfid, external_userid, service_type, member=None, groupchat=None
+    ):
         """
         为客户升级为专员或客户群服务
 

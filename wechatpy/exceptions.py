@@ -48,7 +48,9 @@ class WeChatClientException(WeChatException):
 class InvalidSignatureException(WeChatException):
     """Invalid signature exception class"""
 
-    def __init__(self, errcode: int = -40001, errmsg: str = "Invalid signature") -> None:
+    def __init__(
+        self, errcode: int = -40001, errmsg: str = "Invalid signature"
+    ) -> None:
         super().__init__(errcode, errmsg)
 
 

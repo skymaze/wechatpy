@@ -19,7 +19,9 @@ class WeChatCard(BaseWeChatAPI):
         :param card_data: 卡券信息
         :return: 创建的卡券 ID
         """
-        result = self._post("card/create", data=card_data, result_processor=itemgetter("card_id"))
+        result = self._post(
+            "card/create", data=card_data, result_processor=itemgetter("card_id")
+        )
         return result
 
     def batch_add_locations(self, location_data):
@@ -42,7 +44,9 @@ class WeChatCard(BaseWeChatAPI):
         ⚠️已废弃
         批量获取门店信息
         """
-        return self._post("card/location/batchget", data={"offset": offset, "count": count})
+        return self._post(
+            "card/location/batchget", data={"offset": offset, "count": count}
+        )
 
     def get_colors(self):
         """
@@ -199,7 +203,9 @@ class WeChatCard(BaseWeChatAPI):
         详情请参考
         https://developers.weixin.qq.com/doc/offiaccount/Cards_and_Offer/Managing_Coupons_Vouchers_and_Cards.html#2
         """
-        result = self._post("card/get", data={"card_id": card_id}, result_processor=itemgetter("card"))
+        result = self._post(
+            "card/get", data={"card_id": card_id}, result_processor=itemgetter("card")
+        )
         return result
 
     def update_code(self, card_id, old_code, new_code):
@@ -246,7 +252,9 @@ class WeChatCard(BaseWeChatAPI):
         详情请参考
         https://developers.weixin.qq.com/doc/offiaccount/Cards_and_Offer/Create_a_Coupon_Voucher_or_Card.html#12
         """
-        return self._post("card/paycell/set", data={"card_id": card_id, "is_open": is_open})
+        return self._post(
+            "card/paycell/set", data={"card_id": card_id, "is_open": is_open}
+        )
 
     def set_test_whitelist(self, openids=None, usernames=None):
         """
@@ -257,7 +265,9 @@ class WeChatCard(BaseWeChatAPI):
         """
         openids = openids or []
         usernames = usernames or []
-        return self._post("card/testwhitelist/set", data={"openid": openids, "username": usernames})
+        return self._post(
+            "card/testwhitelist/set", data={"openid": openids, "username": usernames}
+        )
 
     def activate_membercard(self, membership_number, code, **kwargs):
         """
@@ -544,7 +554,9 @@ class WeChatCard(BaseWeChatAPI):
         signer.add_data(card_id)
         signature = signer.signature
 
-        return f"{url}?encrypt_code={encrypt_code}&card_id={card_id}&signature={signature}"
+        return (
+            f"{url}?encrypt_code={encrypt_code}&card_id={card_id}&signature={signature}"
+        )
 
     def deposit_code(self, card_id, codes):
         """

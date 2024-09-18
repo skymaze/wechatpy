@@ -54,4 +54,6 @@ class WeChatSemantic(BaseWeChatAPI):
         data["city"] = city
         data["region"] = region
         data["appid"] = self._client.appid
-        return self._post(url="https://api.weixin.qq.com/semantic/semproxy/search", data=data)
+        return self._post(
+            url="https://api.weixin.qq.com/semantic/semproxy/search", data=data
+        )

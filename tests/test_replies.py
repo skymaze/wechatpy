@@ -15,7 +15,9 @@ class ReplyTestCase(unittest.TestCase):
 
     def test_reply_render(self):
         timestamp = int(time.time())
-        reply = TextReply(source="user1", target="user2", time=timestamp, content="test")
+        reply = TextReply(
+            source="user1", target="user2", time=timestamp, content="test"
+        )
         r = reply.render()
 
         self.assertTrue(r.startswith("<xml>\n"))

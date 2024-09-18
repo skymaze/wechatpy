@@ -13,7 +13,9 @@ class WeChatWxa(BaseWeChatAPI):
         详情请参考
         https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html
         """
-        return self._post("cgi-bin/wxaapp/createwxaqrcode", data={"path": path, "width": width})
+        return self._post(
+            "cgi-bin/wxaapp/createwxaqrcode", data={"path": path, "width": width}
+        )
 
     def get_wxa_code(
         self,
@@ -102,7 +104,9 @@ class WeChatWxa(BaseWeChatAPI):
         详情请参考
         https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
         """
-        subs_data = optionaldict(touser=user_id, template_id=template_id, page=page, data=data)
+        subs_data = optionaldict(
+            touser=user_id, template_id=template_id, page=page, data=data
+        )
         return self._post("cgi-bin/message/subscribe/send", data=subs_data)
 
     def modify_domain(
@@ -168,7 +172,12 @@ class WeChatWxa(BaseWeChatAPI):
         """
         return self._post(
             "wxa/commit",
-            data={"template_id": template_id, "ext_json": ext_json, "user_version": version, "user_desc": description},
+            data={
+                "template_id": template_id,
+                "ext_json": ext_json,
+                "user_version": version,
+                "user_desc": description,
+            },
         )
 
     def get_qrcode(self):
@@ -182,7 +191,14 @@ class WeChatWxa(BaseWeChatAPI):
         """
         return self._get("wxa/get_qrcode")
 
-    def get_url_scheme(self, is_expire=False, expire_type=0, expire_time=None, expire_interval=None, jump_wxa=()):
+    def get_url_scheme(
+        self,
+        is_expire=False,
+        expire_type=0,
+        expire_time=None,
+        expire_interval=None,
+        jump_wxa=(),
+    ):
         """
         获取小程序 scheme 码，适用于短信、邮件、外部网页、微信内等拉起小程序的业务场景。
         详情请参考
@@ -255,7 +271,9 @@ class WeChatWxa(BaseWeChatAPI):
 
         :rtype: list[dict]
         """
-        return self._get("wxa/get_category", result_processor=lambda x: x["category_list"])
+        return self._get(
+            "wxa/get_category", result_processor=lambda x: x["category_list"]
+        )
 
     def get_page(self):
         """
@@ -332,7 +350,9 @@ class WeChatWxa(BaseWeChatAPI):
         :param close: close 为 True 时会关闭小程序线上代码的可见状态。
         :type close: bool
         """
-        return self._post("wxa/change_visitstatus", data={"action": "close" if close else "open"})
+        return self._post(
+            "wxa/change_visitstatus", data={"action": "close" if close else "open"}
+        )
 
     def list_library_templates(self, offset=0, count=20):
         """
@@ -348,7 +368,10 @@ class WeChatWxa(BaseWeChatAPI):
         :return: 带有 total_count 与 list 的数据
         :rtype: dict
         """
-        return self._post("cgi-bin/wxopen/template/library/list", data={"offset": offset, "count": count})
+        return self._post(
+            "cgi-bin/wxopen/template/library/list",
+            data={"offset": offset, "count": count},
+        )
 
     def get_library_template(self, template_short_id):
         """
@@ -360,7 +383,9 @@ class WeChatWxa(BaseWeChatAPI):
         :param template_short_id: 模板标题ID
         :rtype: dict
         """
-        return self._post("cgi-bin/wxopen/template/library/get", data={"id": template_short_id})
+        return self._post(
+            "cgi-bin/wxopen/template/library/get", data={"id": template_short_id}
+        )
 
     def list_templates(self, offset=0, count=20):
         """
@@ -409,7 +434,9 @@ class WeChatWxa(BaseWeChatAPI):
 
         :param template_id: 模板ID
         """
-        return self._post("cgi-bin/wxopen/template/del", data={"template_id": template_id})
+        return self._post(
+            "cgi-bin/wxopen/template/del", data={"template_id": template_id}
+        )
 
     def create_open(self, appid):
         """
@@ -420,7 +447,11 @@ class WeChatWxa(BaseWeChatAPI):
         :param appid: 授权公众号或小程序的 appid
         :return: 开放平台的 appid
         """
-        return self._post("cgi-bin/open/create", data={"appid": appid}, result_processor=lambda x: x["open_appid"])
+        return self._post(
+            "cgi-bin/open/create",
+            data={"appid": appid},
+            result_processor=lambda x: x["open_appid"],
+        )
 
     def get_open(self, appid):
         """
@@ -431,7 +462,11 @@ class WeChatWxa(BaseWeChatAPI):
         :param appid: 授权公众号或小程序的 appid
         :return: 开放平台的 appid
         """
-        return self._post("cgi-bin/open/get", data={"appid": appid}, result_processor=lambda x: x["open_appid"])
+        return self._post(
+            "cgi-bin/open/get",
+            data={"appid": appid},
+            result_processor=lambda x: x["open_appid"],
+        )
 
     def bind_open(self, appid, open_appid):
         """
@@ -442,7 +477,9 @@ class WeChatWxa(BaseWeChatAPI):
         :param appid: 授权公众号或小程序的 appid
         :param open_appid: 开放平台帐号 appid
         """
-        return self._post("cgi-bin/open/bind", data={"appid": appid, "open_appid": open_appid})
+        return self._post(
+            "cgi-bin/open/bind", data={"appid": appid, "open_appid": open_appid}
+        )
 
     def unbind_open(self, appid, open_appid):
         """
@@ -453,7 +490,9 @@ class WeChatWxa(BaseWeChatAPI):
         :param appid: 授权公众号或小程序的 appid
         :param open_appid: 开放平台帐号 appid
         """
-        return self._post("cgi-bin/open/unbind", data={"appid": appid, "open_appid": open_appid})
+        return self._post(
+            "cgi-bin/open/unbind", data={"appid": appid, "open_appid": open_appid}
+        )
 
     def code_to_session(self, js_code):
         """
@@ -517,10 +556,20 @@ class WeChatWxa(BaseWeChatAPI):
         :param media_type: 1:音频;2:图片
         :return: 返回的 JSON 数据包
         """
-        return self._post("wxa/media_check_async", data={"media_url": media_url, "media_type": media_type})
+        return self._post(
+            "wxa/media_check_async",
+            data={"media_url": media_url, "media_type": media_type},
+        )
 
     def check_text_security(
-        self, content, open_id=None, scene=None, nickname=None, title=None, signature=None, version=2
+        self,
+        content,
+        open_id=None,
+        scene=None,
+        nickname=None,
+        title=None,
+        signature=None,
+        version=2,
     ):
         """
         检查一段文本是否含有违法违规内容。
@@ -568,7 +617,9 @@ class WeChatWxa(BaseWeChatAPI):
         """
         return self._get("wxa/queryquota")
 
-    def get_paid_unionid(self, openid, transaction_id=None, mch_id=None, out_trade_no=None):
+    def get_paid_unionid(
+        self, openid, transaction_id=None, mch_id=None, out_trade_no=None
+    ):
         """
         用户支付完成后，获取该用户的 UnionId，无需用户授权。
 
@@ -727,12 +778,21 @@ class WeChatWxa(BaseWeChatAPI):
         :return: 参考文档
         """
         if img_url:
-            return self._post("cv/ocr/idcard", params={"img_url": img_url, "type": mode})
+            return self._post(
+                "cv/ocr/idcard", params={"img_url": img_url, "type": mode}
+            )
         else:
-            return self._post(f"cv/ocr/idcard?type={mode}", files=[("img", (filename, file_bytes, mime_type))])
+            return self._post(
+                f"cv/ocr/idcard?type={mode}",
+                files=[("img", (filename, file_bytes, mime_type))],
+            )
 
     def ocr_biz_license(
-        self, img_url: str = None, filename: str = None, file_bytes: bytes = None, mime_type: str = None
+        self,
+        img_url: str = None,
+        filename: str = None,
+        file_bytes: bytes = None,
+        mime_type: str = None,
     ) -> dict:
         """
         基于小程序的营业执照 OCR 识别
@@ -747,4 +807,6 @@ class WeChatWxa(BaseWeChatAPI):
         if img_url:
             return self._post("cv/ocr/bizlicense", params={"img_url": img_url})
         else:
-            return self._post("cv/ocr/bizlicense", files=[("img", (filename, file_bytes, mime_type))])
+            return self._post(
+                "cv/ocr/bizlicense", files=[("img", (filename, file_bytes, mime_type))]
+            )

@@ -258,7 +258,9 @@ class EventsTestCase(unittest.TestCase):
 
         self.assertTrue(isinstance(event, PicSysPhotoEvent))
         self.assertEqual(1, event.count)
-        self.assertEqual("1b5f7c23b5bf75682a53e7b6d163e185", event.pictures[0]["PicMd5Sum"])
+        self.assertEqual(
+            "1b5f7c23b5bf75682a53e7b6d163e185", event.pictures[0]["PicMd5Sum"]
+        )
 
     def test_pic_photo_or_album_event(self):
         from wechatpy.events import PicPhotoOrAlbumEvent
@@ -283,7 +285,9 @@ class EventsTestCase(unittest.TestCase):
 
         self.assertTrue(isinstance(event, PicPhotoOrAlbumEvent))
         self.assertEqual(1, event.count)
-        self.assertEqual("5a75aaca956d97be686719218f275c6b", event.pictures[0]["PicMd5Sum"])
+        self.assertEqual(
+            "5a75aaca956d97be686719218f275c6b", event.pictures[0]["PicMd5Sum"]
+        )
 
     def test_pic_wechat_event(self):
         from wechatpy.events import PicWeChatEvent
@@ -308,7 +312,9 @@ class EventsTestCase(unittest.TestCase):
 
         self.assertTrue(isinstance(event, PicWeChatEvent))
         self.assertEqual(1, event.count)
-        self.assertEqual("5a75aaca956d97be686719218f275c6b", event.pictures[0]["PicMd5Sum"])
+        self.assertEqual(
+            "5a75aaca956d97be686719218f275c6b", event.pictures[0]["PicMd5Sum"]
+        )
 
     def test_location_select_event(self):
         from wechatpy.events import LocationSelectEvent
@@ -452,7 +458,10 @@ class EventsTestCase(unittest.TestCase):
         event = parse_message(xml)
         self.assertIsInstance(event, SubscribeMsgPopupEvent)
         self.assertEqual(2, len(event.subscribes))
-        self.assertEqual("VRR0UEO9VJOLs0MHlU0OilqX6MVFDwH3_3gz3Oc0NIc", event.subscribes[0]["TemplateId"])
+        self.assertEqual(
+            "VRR0UEO9VJOLs0MHlU0OilqX6MVFDwH3_3gz3Oc0NIc",
+            event.subscribes[0]["TemplateId"],
+        )
 
     def test_template_subscribe_msg_change_event(self):
         from wechatpy.events import SubscribeMsgChangeEvent
@@ -473,7 +482,10 @@ class EventsTestCase(unittest.TestCase):
         event = parse_message(xml)
         self.assertIsInstance(event, SubscribeMsgChangeEvent)
         self.assertEqual(1, len(event.subscribes))
-        self.assertEqual("VRR0UEO9VJOLs0MHlU0OilqX6MVFDwH3_3gz3Oc0NIc", event.subscribes[0]["TemplateId"])
+        self.assertEqual(
+            "VRR0UEO9VJOLs0MHlU0OilqX6MVFDwH3_3gz3Oc0NIc",
+            event.subscribes[0]["TemplateId"],
+        )
         self.assertEqual("reject", event.subscribes[0]["SubscribeStatusString"])
 
     def test_template_subscribe_msg_sent_event(self):
@@ -497,7 +509,10 @@ class EventsTestCase(unittest.TestCase):
         event = parse_message(xml)
         self.assertIsInstance(event, SubscribeMsgSentEvent)
         self.assertEqual(1, len(event.subscribes))
-        self.assertEqual("VRR0UEO9VJOLs0MHlU0OilqX6MVFDwH3_3gz3Oc0NIc", event.subscribes[0]["TemplateId"])
+        self.assertEqual(
+            "VRR0UEO9VJOLs0MHlU0OilqX6MVFDwH3_3gz3Oc0NIc",
+            event.subscribes[0]["TemplateId"],
+        )
         self.assertEqual("1700827132819554304", event.subscribes[0]["MsgID"])
 
     def test_shakearound_user_shake_event(self):

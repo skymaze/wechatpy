@@ -23,10 +23,14 @@ class MerchantGroup(BaseWeChatAPI):
         )
 
     def update_product(self, group_id, product):
-        return self._post("merchant/group/productmod", data={"group_id": group_id, "product": product})
+        return self._post(
+            "merchant/group/productmod", data={"group_id": group_id, "product": product}
+        )
 
     def get_all(self):
-        res = self._get("merchant/group/getall", result_processor=lambda x: x["groups_detail"])
+        res = self._get(
+            "merchant/group/getall", result_processor=lambda x: x["groups_detail"]
+        )
         return res
 
     def get(self, group_id):

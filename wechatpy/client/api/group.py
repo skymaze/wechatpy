@@ -75,7 +75,9 @@ class WeChatGroup(BaseWeChatAPI):
 
         """
         name = to_text(name)
-        return self._post("groups/update", data={"group": {"id": int(group_id), "name": name}})
+        return self._post(
+            "groups/update", data={"group": {"id": int(group_id), "name": name}}
+        )
 
     def move_user(self, user_id, group_id):
         """

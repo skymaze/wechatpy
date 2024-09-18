@@ -37,7 +37,9 @@ class WeChatCalendar(BaseWeChatAPI):
                 "shares": [{"userid": userid} for userid in shares],
             }
         }
-        return self._post("oa/calendar/add", data=data, result_processor=op.itemgetter("cal_id"))
+        return self._post(
+            "oa/calendar/add", data=data, result_processor=op.itemgetter("cal_id")
+        )
 
     def update(self, calendar_id, summary, color, description="", shares=()):
         """
@@ -62,7 +64,9 @@ class WeChatCalendar(BaseWeChatAPI):
                 "shares": [{"userid": userid} for userid in shares],
             }
         }
-        return self._post("oa/calendar/update", data=data, result_processor=op.itemgetter("cal_id"))
+        return self._post(
+            "oa/calendar/update", data=data, result_processor=op.itemgetter("cal_id")
+        )
 
     def get(self, calendar_ids):
         """

@@ -22,7 +22,9 @@ class WeChatDepartment(BaseWeChatAPI):
         :param name_en: 英文名称。同一个层级的部门名称不能重复。需要在管理后台开启多语言支持才能生效。长度限制为1~32个字符，字符不能包括:*?"<>｜
         :return: 返回的 JSON 数据包
         """
-        data = optionaldict(name=name, parentid=parent_id, order=order, id=id, name_en=name_en)
+        data = optionaldict(
+            name=name, parentid=parent_id, order=order, id=id, name_en=name_en
+        )
         return self._post("department/create", data=data)
 
     def update(self, id, name=None, parent_id=None, order=None, name_en=None):
@@ -39,7 +41,9 @@ class WeChatDepartment(BaseWeChatAPI):
         :param name_en: 英文名称。同一个层级的部门名称不能重复。需要在管理后台开启多语言支持才能生效。长度限制为1~32个字符，字符不能包括:*?"<>｜
         :return: 返回的 JSON 数据包
         """
-        data = optionaldict(id=id, name=name, parentid=parent_id, order=order, name_en=name_en)
+        data = optionaldict(
+            id=id, name=name, parentid=parent_id, order=order, name_en=name_en
+        )
         return self._post("department/update", data=data)
 
     def delete(self, id):
@@ -138,7 +142,12 @@ class WeChatDepartment(BaseWeChatAPI):
         """
         ids = [id] if id is not None else [item["id"] for item in self.list()]
         users_info = list(
-            chain(*[self.get_users(department, fetch_child=fetch_child, simple=False) for department in ids])
+            chain(
+                *[
+                    self.get_users(department, fetch_child=fetch_child, simple=False)
+                    for department in ids
+                ]
+            )
         )
         users_zip = [(user[key], user["userid"]) for user in users_info]
         return dict(users_zip)

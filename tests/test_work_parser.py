@@ -306,7 +306,9 @@ class ParseMessageTestCase(unittest.TestCase):
         msg = parse_message(xml)
 
         self.assertIsInstance(msg, events.ExportEvent)
-        self.assertEqual("jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id)
+        self.assertEqual(
+            "jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id
+        )
         self.assertEqual("export_user", msg.job_type)
 
         xml = """
@@ -327,7 +329,9 @@ class ParseMessageTestCase(unittest.TestCase):
         msg = parse_message(xml)
 
         self.assertIsInstance(msg, events.ExportEvent)
-        self.assertEqual("jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id)
+        self.assertEqual(
+            "jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id
+        )
         self.assertEqual("export_simple_user", msg.job_type)
 
         xml = """
@@ -348,7 +352,9 @@ class ParseMessageTestCase(unittest.TestCase):
         msg = parse_message(xml)
 
         self.assertIsInstance(msg, events.ExportEvent)
-        self.assertEqual("jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id)
+        self.assertEqual(
+            "jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id
+        )
         self.assertEqual("export_department", msg.job_type)
 
         xml = """
@@ -369,7 +375,9 @@ class ParseMessageTestCase(unittest.TestCase):
         msg = parse_message(xml)
 
         self.assertIsInstance(msg, events.ExportEvent)
-        self.assertEqual("jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id)
+        self.assertEqual(
+            "jobid_S0MrnndvRG5fadSlLwiBqiDDbM143UqTmKP3152FZk4", msg.job_id
+        )
         self.assertEqual("export_taguser", msg.job_type)
 
     def test_meeting(self):

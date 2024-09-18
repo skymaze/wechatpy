@@ -81,7 +81,9 @@ class WeChatSchedule(BaseWeChatAPI):
                 "cal_id": calendar_id,
             }
         }
-        return self._post("oa/schedule/add", data=data, result_processor=op.itemgetter("schedule_id"))
+        return self._post(
+            "oa/schedule/add", data=data, result_processor=op.itemgetter("schedule_id")
+        )
 
     def update(
         self,
@@ -224,4 +226,7 @@ class WeChatSchedule(BaseWeChatAPI):
         :type users: list[str]
         """
         attendees = [{"userid": i for i in users}]
-        return self._post("oa/schedule/del_attendees", data={"schedule_id": schedule_id, "attendees": attendees})
+        return self._post(
+            "oa/schedule/del_attendees",
+            data={"schedule_id": schedule_id, "attendees": attendees},
+        )

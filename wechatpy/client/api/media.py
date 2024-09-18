@@ -21,7 +21,9 @@ class WeChatMedia(BaseWeChatAPI):
 
         :return: 返回的 JSON 数据包
         """
-        return self._post(url="media/upload", params={"type": media_type}, files={"media": media_file})
+        return self._post(
+            url="media/upload", params={"type": media_type}, files={"media": media_file}
+        )
 
     def download(self, media_id):
         """

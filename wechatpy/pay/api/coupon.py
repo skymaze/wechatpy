@@ -7,7 +7,9 @@ from wechatpy.pay.api.base import BaseWeChatPayAPI
 
 
 class WeChatCoupon(BaseWeChatPayAPI):
-    def send(self, user_id, stock_id, op_user_id=None, device_info=None, out_trade_no=None):
+    def send(
+        self, user_id, stock_id, op_user_id=None, device_info=None, out_trade_no=None
+    ):
         """
         发放代金券
 

@@ -18,7 +18,14 @@ class WeChatOAuth:
     API_BASE_URL: str = "https://api.weixin.qq.com/"
     OAUTH_BASE_URL: str = "https://open.weixin.qq.com/connect/"
 
-    def __init__(self, app_id: str, secret: str, redirect_uri: str, scope: str = "snsapi_base", state: str = "") -> None:
+    def __init__(
+        self,
+        app_id: str,
+        secret: str,
+        redirect_uri: str,
+        scope: str = "snsapi_base",
+        state: str = "",
+    ) -> None:
         self.app_id = app_id
         self.secret = secret
         self.redirect_uri = redirect_uri
@@ -53,7 +60,9 @@ class WeChatOAuth:
         if "errcode" in result and result["errcode"] != 0:
             errcode = result["errcode"]
             errmsg = result["errmsg"]
-            raise WeChatOAuthException(errcode, errmsg, client=self, request=res.request, response=res)
+            raise WeChatOAuthException(
+                errcode, errmsg, client=self, request=res.request, response=res
+            )
 
         return result
 
@@ -125,7 +134,9 @@ class WeChatOAuth:
         self.expires_in = res["expires_in"]
         return res
 
-    def get_user_info(self, openid: str = None, access_token: str = None, lang: str = "zh_CN") -> dict:
+    def get_user_info(
+        self, openid: str = None, access_token: str = None, lang: str = "zh_CN"
+    ) -> dict:
         openid = openid or self.open_id
         access_token = access_token or self.access_token
         return self._get(
@@ -136,7 +147,9 @@ class WeChatOAuth:
     def check_access_token(self, openid: str = None, access_token: str = None) -> bool:
         openid = openid or self.open_id
         access_token = access_token or self.access_token
-        res = self._get("sns/auth", params={"access_token": access_token, "openid": openid})
+        res = self._get(
+            "sns/auth", params={"access_token": access_token, "openid": openid}
+        )
         if res["errcode"] == 0:
             return True
         return False

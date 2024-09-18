@@ -105,7 +105,9 @@ class WeChatUser(BaseWeChatAPI):
         >>>    client.user.update_remark('openid', 'Remark')
 
         """
-        return self._post("user/info/updateremark", data={"openid": user_id, "remark": remark})
+        return self._post(
+            "user/info/updateremark", data={"openid": user_id, "remark": remark}
+        )
 
     def get_group_id(self, user_id):
         """

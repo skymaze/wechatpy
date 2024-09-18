@@ -129,7 +129,9 @@ class FieldsTestCase(unittest.TestCase):
 
         content = b"test"
         field = Base64EncodeField("Content")
-        expected = f"<Content><![CDATA[{to_text(base64.b64encode(content))}]]></Content>"
+        expected = (
+            f"<Content><![CDATA[{to_text(base64.b64encode(content))}]]></Content>"
+        )
         self.assertEqual(expected, field.to_xml(content))
 
     def test_base64decode_field_to_xml(self):

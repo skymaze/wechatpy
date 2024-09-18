@@ -26,7 +26,9 @@ class WeChatMarketing(BaseWeChatAPI):
         return self._post(
             "user_action_sets/add",
             params={"version": version},
-            json=optionaldict(type=_type, name=name, description=description, version=version),
+            json=optionaldict(
+                type=_type, name=name, description=description, version=version
+            ),
             result_processor=lambda x: x["data"]["user_action_set_id"],
         )
 
@@ -52,7 +54,9 @@ class WeChatMarketing(BaseWeChatAPI):
         :param actions: 用户行为源类型
         :param version: 版本号 v1.0
         """
-        return self._post("user_actions/add", params={"version": version}, json={"actions": actions})
+        return self._post(
+            "user_actions/add", params={"version": version}, json={"actions": actions}
+        )
 
     def get_user_action_set_reports(
         self,

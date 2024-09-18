@@ -42,7 +42,9 @@ class WeChatExternalContactGroupChat(BaseWeChatAPI):
             data["owner_filter"] = {"userid_list": owner_userid_list}
         return self._post("externalcontact/groupchat/list", data=data)
 
-    def list_all(self, status_filter: int = 0, owner_userid_list: List = None, limit: int = 100) -> List:
+    def list_all(
+        self, status_filter: int = 0, owner_userid_list: List = None, limit: int = 100
+    ) -> List:
         """
         该接口用于获取配置过客户群管理的所有客户群列表，自动走完所有分页
         """

@@ -59,12 +59,16 @@ class WeChatPayTestCase(unittest.TestCase):
 
     def test_apply_deduct(self):
         with HTTMock(wechat_api_mock):
-            response = self.client.withhold.apply_deduct(body="测试商品", total_fee=999, contract_id="203", notify_url="")
+            response = self.client.withhold.apply_deduct(
+                body="测试商品", total_fee=999, contract_id="203", notify_url=""
+            )
             self.assertEqual(response["result_code"], "SUCCESS")
 
     def test_query_order(self):
         with HTTMock(wechat_api_mock):
-            response = self.client.withhold.query_order(out_trade_no="217752501201407033233368018")
+            response = self.client.withhold.query_order(
+                out_trade_no="217752501201407033233368018"
+            )
             self.assertEqual(response["result_code"], "SUCCESS")
 
     def test_apply_cancel_signing(self):

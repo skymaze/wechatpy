@@ -893,7 +893,9 @@ class SubmitInvoiceTitleEvent(BaseEvent):
     bank_type = StringField("bank_type")  # 银行类型
     bank_no = StringField("bank_no")  # 银行号码
     attach = StringField("attach")  # 附加字段
-    title_type = StringField("title_type")  # 抬头类型，个人InvoiceUserTitlePersonType, 公司InvoiceUserTitleBusinessType
+    title_type = StringField(
+        "title_type"
+    )  # 抬头类型，个人InvoiceUserTitlePersonType, 公司InvoiceUserTitleBusinessType
 
 
 class UserEnterTempSessionEvent(BaseEvent):
@@ -928,7 +930,9 @@ class WxaMediaCheckEvent(BaseEvent):
     is_risky = IntegerField("isrisky")  # 检测结果，0：暂未检测到风险，1：风险
     extra_info_json = StringField("extra_info_json")  # 附加信息，默认为空
     trace_id = StringField("trace_id")  # 任务 id
-    status_code = IntegerField("status_code")  # 默认为：0，4294966288(-1008)为链接无法下载
+    status_code = IntegerField(
+        "status_code"
+    )  # 默认为：0，4294966288(-1008)为链接无法下载
 
     @property
     def is_valid(self):

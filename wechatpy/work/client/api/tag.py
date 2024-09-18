@@ -14,7 +14,9 @@ class WeChatTag(BaseWeChatAPI):
     @staticmethod
     def _validate_tag_name(tag_name):
         if len(tag_name) > 32:
-            raise ValueError("the length of the tag name cannot be more than 32 characters")
+            raise ValueError(
+                "the length of the tag name cannot be more than 32 characters"
+            )
 
     def create(self, name: str, tag_id: Optional[int] = None) -> dict:
         """创建标签
@@ -176,7 +178,10 @@ class WeChatTag(BaseWeChatAPI):
         return self._get("tag/get", params={"tagid": tag_id})
 
     def add_users(
-        self, tag_id: int, user_ids: Optional[List[str]] = None, department_ids: Optional[List[int]] = None
+        self,
+        tag_id: int,
+        user_ids: Optional[List[str]] = None,
+        department_ids: Optional[List[int]] = None,
     ) -> dict:
         """增加标签成员
 
@@ -235,11 +240,15 @@ class WeChatTag(BaseWeChatAPI):
         """
         self._validate_tag_id(tag_id)
         if not user_ids and not department_ids:
-            raise ValueError("user_ids and department_ids cannot be empty at the same time")
+            raise ValueError(
+                "user_ids and department_ids cannot be empty at the same time"
+            )
         if user_ids is not None and len(user_ids) > 1000:
             raise ValueError("the length of the user_ids cannot be greater than 1000")
         if department_ids is not None and len(department_ids) > 100:
-            raise ValueError("the length of the department_ids cannot be greater than 100")
+            raise ValueError(
+                "the length of the department_ids cannot be greater than 100"
+            )
 
         data: Dict[str, Any] = {"tagid": tag_id}
         if user_ids:
@@ -250,7 +259,10 @@ class WeChatTag(BaseWeChatAPI):
         return self._post("tag/addtagusers", data=data)
 
     def delete_users(
-        self, tag_id: int, user_ids: Optional[List[str]] = None, department_ids: Optional[List[int]] = None
+        self,
+        tag_id: int,
+        user_ids: Optional[List[str]] = None,
+        department_ids: Optional[List[int]] = None,
     ) -> dict:
         """删除标签成员
 
@@ -306,11 +318,15 @@ class WeChatTag(BaseWeChatAPI):
         """
         self._validate_tag_id(tag_id)
         if not user_ids and not department_ids:
-            raise ValueError("user_ids and department_ids cannot be empty at the same time")
+            raise ValueError(
+                "user_ids and department_ids cannot be empty at the same time"
+            )
         if user_ids is not None and len(user_ids) > 1000:
             raise ValueError("the length of the user_ids cannot be greater than 1000")
         if department_ids is not None and len(department_ids) > 100:
-            raise ValueError("the length of the department_ids cannot be greater than 100")
+            raise ValueError(
+                "the length of the department_ids cannot be greater than 100"
+            )
 
         data: Dict[str, Any] = {"tagid": tag_id}
         if user_ids:

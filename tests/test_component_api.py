@@ -38,7 +38,9 @@ class WeChatComponentTestCase(unittest.TestCase):
     encoding_aes_key = "yguy3495y79o34vod7843933902h9gb2834hgpB90rg"
 
     def setUp(self):
-        self.client = WeChatComponent(self.app_id, self.app_secret, self.token, self.encoding_aes_key)
+        self.client = WeChatComponent(
+            self.app_id, self.app_secret, self.token, self.encoding_aes_key
+        )
 
     def test_fetch_access_token_is_method(self):
         self.assertTrue(inspect.ismethod(self.client.fetch_access_token))
@@ -60,7 +62,9 @@ class WeChatComponentTestCase(unittest.TestCase):
         authorization_code = "1234567890"
         with HTTMock(wechat_api_mock):
             result = self.client.query_auth(authorization_code)
-            self.assertEqual("wxf8b4f85f3a794e77", result["authorization_info"]["authorizer_appid"])
+            self.assertEqual(
+                "wxf8b4f85f3a794e77", result["authorization_info"]["authorizer_appid"]
+            )
 
     def test_refresh_authorizer_token(self):
         appid = "appid"

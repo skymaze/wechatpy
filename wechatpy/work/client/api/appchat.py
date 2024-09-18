@@ -50,7 +50,9 @@ class WeChatAppChat(BaseWeChatAPI):
         res = self._get("appchat/get", params={"chatid": chat_id})
         return res["chat_info"]
 
-    def update(self, chat_id, name=None, owner=None, add_user_list=None, del_user_list=None):
+    def update(
+        self, chat_id, name=None, owner=None, add_user_list=None, del_user_list=None
+    ):
         """
         修改群聊会话
 

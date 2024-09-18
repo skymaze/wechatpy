@@ -39,7 +39,9 @@ class WeChatFreePublish(BaseWeChatAPI):
         :param index: 要删除的文章在图文消息中的位置，第一篇编号为1，该字段不填或填 0 会删除全部文章
         :return: 返回的 JSON 数据包
         """
-        return self._post("freepublish/delete", data={"article_id": article_id, "index": index})
+        return self._post(
+            "freepublish/delete", data={"article_id": article_id, "index": index}
+        )
 
     def getarticle(self, article_id: str) -> dict:
         """
@@ -67,4 +69,7 @@ class WeChatFreePublish(BaseWeChatAPI):
         :param no_content: 1 表示不返回 content 字段，0 表示正常返回，默认为 0
         :return: 返回的 JSON 数据包
         """
-        return self._post("freepublish/batchget", data={"offset": offset, "count": count, "no_content": no_content})
+        return self._post(
+            "freepublish/batchget",
+            data={"offset": offset, "count": count, "no_content": no_content},
+        )

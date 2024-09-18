@@ -126,7 +126,9 @@ class WeChatMessage(BaseWeChatAPI):
             },
         )
 
-    def send_image(self, agent_id, user_ids, media_id, party_ids="", tag_ids="", safe=0):
+    def send_image(
+        self, agent_id, user_ids, media_id, party_ids="", tag_ids="", safe=0
+    ):
         return self.send(
             agent_id,
             user_ids,
@@ -135,7 +137,9 @@ class WeChatMessage(BaseWeChatAPI):
             msg={"msgtype": "image", "image": {"media_id": media_id}, "safe": safe},
         )
 
-    def send_voice(self, agent_id, user_ids, media_id, party_ids="", tag_ids="", safe=0):
+    def send_voice(
+        self, agent_id, user_ids, media_id, party_ids="", tag_ids="", safe=0
+    ):
         return self.send(
             agent_id,
             user_ids,
@@ -196,7 +200,9 @@ class WeChatMessage(BaseWeChatAPI):
             msg={"msgtype": "news", "news": {"articles": articles_data}},
         )
 
-    def send_mp_articles(self, agent_id, user_ids, articles, party_ids="", tag_ids="", safe=0):
+    def send_mp_articles(
+        self, agent_id, user_ids, articles, party_ids="", tag_ids="", safe=0
+    ):
         articles_data = []
         for article in articles:
             articles_data.append(
@@ -261,5 +267,10 @@ class WeChatMessage(BaseWeChatAPI):
         Returns:
             dict: 接口返回结果
         """
-        data = {"userids": user_ids, "agentid": agent_id, "task_id": task_id, "replace_name": replace_name}
+        data = {
+            "userids": user_ids,
+            "agentid": agent_id,
+            "task_id": task_id,
+            "replace_name": replace_name,
+        }
         return self._post("message/update_taskcard", data=data)

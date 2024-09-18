@@ -24,7 +24,9 @@ class WeChatDraft(BaseWeChatAPI):
                     "content_source_url": article.get("content_source_url", ""),
                     "thumb_media_id": article["thumb_media_id"],
                     "need_open_comment": int(article.get("need_open_comment", False)),
-                    "only_fans_can_comment": int(article.get("only_fans_can_comment", False)),
+                    "only_fans_can_comment": int(
+                        article.get("only_fans_can_comment", False)
+                    ),
                 }
             )
         return self._post("draft/add", data={"articles": articles_data})
@@ -67,7 +69,10 @@ class WeChatDraft(BaseWeChatAPI):
         :param articles: 草稿内容，详情见链接
         :return: 返回的 JSON 数据包
         """
-        return self._post("draft/update", data={"media_id": media_id, "index": index, "articles": articles})
+        return self._post(
+            "draft/update",
+            data={"media_id": media_id, "index": index, "articles": articles},
+        )
 
     def count(self) -> dict:
         """

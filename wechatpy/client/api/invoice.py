@@ -82,7 +82,9 @@ class WeChatInvoice(BaseWeChatAPI):
         :return: 获取授权页链接
         """
         if source not in {"app", "web", "wap"}:
-            raise ValueError('Unsupported source. Valid sources are "app", "web" or "wap"')
+            raise ValueError(
+                'Unsupported source. Valid sources are "app", "web" or "wap"'
+            )
         if source == "web" and redirect_url is None:
             raise ValueError("redirect_url is required if source is web")
         if auth_type not in {0, 1, 2}:

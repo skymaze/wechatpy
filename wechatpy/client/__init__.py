@@ -8,7 +8,6 @@ from wechatpy.client import api
 
 
 class WeChatClient(BaseWeChatClient):
-
     """
     微信 API 操作类
     通过这个类可以操作微信 API，发送主动消息、群发消息和创建自定义菜单等。
@@ -76,7 +75,6 @@ class WeChatClient(BaseWeChatClient):
 
 
 class WeChatComponentClient(WeChatClient):
-
     """
     开放平台代公众号调用客户端
     """
@@ -99,7 +97,9 @@ class WeChatComponentClient(WeChatClient):
         # 如果外部已经缓存，这里只需要传入 appid，component和session即可
         cache_access_token = self.session.get(self.access_token_key)
 
-        if access_token and (not cache_access_token or cache_access_token != access_token):
+        if access_token and (
+            not cache_access_token or cache_access_token != access_token
+        ):
             self.session.set(self.access_token_key, access_token, 7200)
         if refresh_token:
             self.session.set(self.refresh_token_key, refresh_token)
@@ -139,6 +139,8 @@ class WeChatComponentClient(WeChatClient):
         result = self.component.refresh_authorizer_token(self.appid, self.refresh_token)
         if "expires_in" in result:
             expires_in = result["expires_in"]
-        self.session.set(self.access_token_key, result["authorizer_access_token"], expires_in)
+        self.session.set(
+            self.access_token_key, result["authorizer_access_token"], expires_in
+        )
         self.expires_at = int(time.time()) + expires_in
         return result

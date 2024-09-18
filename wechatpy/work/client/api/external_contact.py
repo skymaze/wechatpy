@@ -209,7 +209,9 @@ class WeChatExternalContact(BaseWeChatAPI):
 
         .. _获取客户详情: https://work.weixin.qq.com/api/doc/90000/90135/92114
         """
-        return self._get("externalcontact/get", params={"external_userid": external_userid})
+        return self._get(
+            "externalcontact/get", params={"external_userid": external_userid}
+        )
 
     def add_contact_way(
         self,
@@ -588,7 +590,9 @@ class WeChatExternalContact(BaseWeChatAPI):
         """
         assert userid or partyid, "userid和partyid不可同时为空"
 
-        data = optionaldict(userid=userid, start_time=start_time, end_time=end_time, partyid=partyid)
+        data = optionaldict(
+            userid=userid, start_time=start_time, end_time=end_time, partyid=partyid
+        )
         return self._post("externalcontact/get_user_behavior_data", data=data)
 
     def send_welcome_msg(self, template: dict) -> dict:
@@ -668,7 +672,9 @@ class WeChatExternalContact(BaseWeChatAPI):
         """
         return self._post("externalcontact/send_welcome_msg", data=template)
 
-    def get_unassigned_list(self, page_id: int = 0, page_size: int = 1000, cursor: Optional[str] = None) -> dict:
+    def get_unassigned_list(
+        self, page_id: int = 0, page_size: int = 1000, cursor: Optional[str] = None
+    ) -> dict:
         """
         获取离职成员列表
 
@@ -889,11 +895,15 @@ class WeChatExternalContact(BaseWeChatAPI):
 
         .. warning:: 暂不支持第三方调用。
         """
-        data = optionaldict(group_id=group_id, group_name=group_name, order=order, tag=tags)
+        data = optionaldict(
+            group_id=group_id, group_name=group_name, order=order, tag=tags
+        )
 
         return self._post("externalcontact/add_corp_tag", data=data)
 
-    def edit_corp_tag(self, id: str, name: Optional[str] = None, order: Optional[int] = None) -> dict:
+    def edit_corp_tag(
+        self, id: str, name: Optional[str] = None, order: Optional[int] = None
+    ) -> dict:
         """
         编辑企业客户标签
 
@@ -942,7 +952,9 @@ class WeChatExternalContact(BaseWeChatAPI):
         data = optionaldict(id=id, name=name, order=order)
         return self._post("externalcontact/edit_corp_tag", data=data)
 
-    def del_corp_tag(self, tag_id: Optional[str] = None, group_id: Optional[str] = None) -> dict:
+    def del_corp_tag(
+        self, tag_id: Optional[str] = None, group_id: Optional[str] = None
+    ) -> dict:
         """
         删除企业客户标签
 
@@ -1051,7 +1063,12 @@ class WeChatExternalContact(BaseWeChatAPI):
         """
         add_tag = add_tag or []
         remove_tag = remove_tag or []
-        data = optionaldict(userid=userid, external_userid=external_userid, add_tag=add_tag, remove_tag=remove_tag)
+        data = optionaldict(
+            userid=userid,
+            external_userid=external_userid,
+            add_tag=add_tag,
+            remove_tag=remove_tag,
+        )
         return self._post("externalcontact/mark_tag", data=data)
 
     def get_group_chat_list(
@@ -1099,7 +1116,12 @@ class WeChatExternalContact(BaseWeChatAPI):
 
         .. _获取客户群列表: https://work.weixin.qq.com/api/doc/90000/90135/92120
         """
-        data = optionaldict(status_filter=status_filter, owner_filter=owner_filter, cursor=cursor, limit=limit)
+        data = optionaldict(
+            status_filter=status_filter,
+            owner_filter=owner_filter,
+            cursor=cursor,
+            limit=limit,
+        )
         return self._post("externalcontact/groupchat/list", data=data)
 
     def get_group_chat_info(self, chat_id: str) -> dict:
@@ -1130,7 +1152,9 @@ class WeChatExternalContact(BaseWeChatAPI):
         data = optionaldict(chat_id=chat_id)
         return self._post("externalcontact/groupchat/get", data=data)
 
-    def add_group_welcome_template(self, template: dict, agentid: Optional[int] = None) -> dict:
+    def add_group_welcome_template(
+        self, template: dict, agentid: Optional[int] = None
+    ) -> dict:
         """
         添加群欢迎语素材
 
@@ -1160,7 +1184,9 @@ class WeChatExternalContact(BaseWeChatAPI):
         data["agentid"] = agentid
         return self._post("externalcontact/group_welcome_template/add", data=data)
 
-    def update_group_welcome_template(self, template: dict, template_id: str, agentid: Optional[int] = None) -> dict:
+    def update_group_welcome_template(
+        self, template: dict, template_id: str, agentid: Optional[int] = None
+    ) -> dict:
         """
         编辑群欢迎语素材
 
@@ -1217,7 +1243,9 @@ class WeChatExternalContact(BaseWeChatAPI):
         data = optionaldict(template_id=template_id)
         return self._post("externalcontact/group_welcome_template/get", data=data)
 
-    def del_group_welcome_template(self, template_id: str, agentid: Optional[int] = None) -> dict:
+    def del_group_welcome_template(
+        self, template_id: str, agentid: Optional[int] = None
+    ) -> dict:
         """
         删除入群欢迎语素材
 

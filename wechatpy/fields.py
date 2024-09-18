@@ -30,7 +30,11 @@ class FieldDescriptor:
                 instance._data[self.attr_name] = value
             if isinstance(value, dict):
                 value = ObjectDict(value)
-            if value and not isinstance(value, (dict, list, tuple)) and callable(self.field.converter):
+            if (
+                value
+                and not isinstance(value, (dict, list, tuple))
+                and callable(self.field.converter)
+            ):
                 value = self.field.converter(value)
             return value
         return self.field
@@ -161,7 +165,9 @@ class VideoField(StringField):
         return tpl.format(**kwargs)
 
     @classmethod
-    def from_xml(cls, value: Dict[str, Union[str, Dict[str, str]]]) -> Dict[str, Union[str, Dict[str, str]]]:
+    def from_xml(
+        cls, value: Dict[str, Union[str, Dict[str, str]]]
+    ) -> Dict[str, Union[str, Dict[str, str]]]:
         rv = dict(media_id=value["MediaId"])
         if "Title" in value:
             rv["title"] = value["Title"]
@@ -190,7 +196,9 @@ class MusicField(StringField):
         return tpl.format(**kwargs)
 
     @classmethod
-    def from_xml(cls, value: Dict[str, Union[str, Dict[str, str]]]) -> Dict[str, Union[str, Dict[str, str]]]:
+    def from_xml(
+        cls, value: Dict[str, Union[str, Dict[str, str]]]
+    ) -> Dict[str, Union[str, Dict[str, str]]]:
         rv = dict(thumb_media_id=value["ThumbMediaId"])
         if "Title" in value:
             rv["title"] = value["Title"]

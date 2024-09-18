@@ -315,7 +315,11 @@ class HardwareReply(BaseReply):
     hardware: HardwareField = HardwareField("HardWare")
 
 
-def create_reply(reply: Union[str, List[Dict[str, Any]], BaseReply, None], message: Optional[BaseMessage] = None, render: bool = False) -> Optional[BaseReply]:
+def create_reply(
+    reply: Union[str, List[Dict[str, Any]], BaseReply, None],
+    message: Optional[BaseMessage] = None,
+    render: bool = False,
+) -> Optional[BaseReply]:
     """
     Create a reply quickly
     """

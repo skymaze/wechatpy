@@ -57,7 +57,9 @@ class WeChatAppAuth(BaseWeChatPayAPI):
         )
         return res
 
-    def real_name_auth(self, openid: str, real_name: str, cred_id: str, access_token: str) -> Dict[str, Any]:
+    def real_name_auth(
+        self, openid: str, real_name: str, cred_id: str, access_token: str
+    ) -> Dict[str, Any]:
         """
         取得 access_token 后调用本接口验证微信用户的姓名和身份证信息是否匹配
 

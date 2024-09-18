@@ -37,17 +37,23 @@ class WeChatClientTestCase(unittest.TestCase):
     def test_ec_addcorptag(self):
         tags = [{"name": "大鸟"}, {"name": "小菜"}]
         with HTTMock(wechat_api_mock):
-            res = self.client.external_contact.add_corp_tag(None, "开发1组", 1, tags=tags)
+            res = self.client.external_contact.add_corp_tag(
+                None, "开发1组", 1, tags=tags
+            )
         self.assertEqual(0, res["errcode"])
 
     def test_ec_edit_corp_tag(self):
         with HTTMock(wechat_api_mock):
-            res = self.client.external_contact.edit_corp_tag("etm7wjCgAA-DYuu_JX8DrN0EUfa1ycDw", "开发2组", 1)
+            res = self.client.external_contact.edit_corp_tag(
+                "etm7wjCgAA-DYuu_JX8DrN0EUfa1ycDw", "开发2组", 1
+            )
         self.assertEqual(0, res["errcode"])
 
     def test_ec_del_corp_tag(self):
         with HTTMock(wechat_api_mock):
-            res = self.client.external_contact.del_corp_tag(tag_id=["etm7wjCgAAADvErs_p_VhdNdN6-i2zAg"])
+            res = self.client.external_contact.del_corp_tag(
+                tag_id=["etm7wjCgAAADvErs_p_VhdNdN6-i2zAg"]
+            )
         self.assertEqual(0, res["errcode"])
 
     def test_ec_mark_tag(self):

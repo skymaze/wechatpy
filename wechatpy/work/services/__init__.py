@@ -69,7 +69,9 @@ class WeChatServiceClient(BaseWeChatClient):
         expires_in = 7200
         if "expires_in" in result:
             expires_in = result["expires_in"]
-        self.session.set(self.access_token_key, result["suite_access_token"], expires_in)
+        self.session.set(
+            self.access_token_key, result["suite_access_token"], expires_in
+        )
         self.expires_at = int(time.time()) + expires_in
         return result
 
@@ -82,7 +84,10 @@ class WeChatServiceClient(BaseWeChatClient):
 
         if "params" not in kwargs:
             kwargs["params"] = {}
-        if isinstance(kwargs["params"], dict) and "suite_access_token" not in kwargs["params"]:
+        if (
+            isinstance(kwargs["params"], dict)
+            and "suite_access_token" not in kwargs["params"]
+        ):
             kwargs["params"]["suite_access_token"] = self.access_token
         if isinstance(kwargs.get("data", ""), dict):
             body = json.dumps(kwargs["data"], ensure_ascii=False)
@@ -109,5 +114,9 @@ class WeChatServiceClient(BaseWeChatClient):
         """Fetch access token"""
         return self._fetch_access_token(
             url="https://qyapi.weixin.qq.com/cgi-bin/service/get_suite_token",
-            params={"suite_id": self.suite_id, "suite_secret": self.suite_secret, "suite_ticket": self.suite_ticket},
+            params={
+                "suite_id": self.suite_id,
+                "suite_secret": self.suite_secret,
+                "suite_ticket": self.suite_ticket,
+            },
         )

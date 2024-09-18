@@ -22,7 +22,11 @@ INVOICE_REIMBURSE_LOCK = "INVOICE_REIMBURSE_LOCK"
 # 发票已核销，从用户卡包中移除
 INVOICE_REIMBURSE_CLOSURE = "INVOICE_REIMBURSE_CLOSURE"
 
-invoice_reimburse_status_set = {INVOICE_REIMBURSE_INIT, INVOICE_REIMBURSE_LOCK, INVOICE_REIMBURSE_CLOSURE}
+invoice_reimburse_status_set = {
+    INVOICE_REIMBURSE_INIT,
+    INVOICE_REIMBURSE_LOCK,
+    INVOICE_REIMBURSE_CLOSURE,
+}
 
 
 class WeChatInvoice(BaseWeChatAPI):
@@ -72,7 +76,9 @@ class WeChatInvoice(BaseWeChatAPI):
         data = {"item_list": item_list}
         return self._post(url, data=data)
 
-    def update_status(self, card_id: str, encrypt_code: str, reimburse_status: str) -> dict:
+    def update_status(
+        self, card_id: str, encrypt_code: str, reimburse_status: str
+    ) -> dict:
         """更新发票状态
 
         参考：https://work.weixin.qq.com/api/doc/90000/90135/90285
@@ -104,10 +110,16 @@ class WeChatInvoice(BaseWeChatAPI):
         """
         self._validate_invoice_reimburse(reimburse_status)
         url = "card/invoice/reimburse/updateinvoicestatus"
-        data = {"card_id": card_id, "encrypt_code": encrypt_code, "reimburse_status": reimburse_status}
+        data = {
+            "card_id": card_id,
+            "encrypt_code": encrypt_code,
+            "reimburse_status": reimburse_status,
+        }
         return self._post(url, data=data)
 
-    def update_status_batch(self, openid: str, reimburse_status: str, invoice_list: List[Dict[str, str]]) -> dict:
+    def update_status_batch(
+        self, openid: str, reimburse_status: str, invoice_list: List[Dict[str, str]]
+    ) -> dict:
         """批量更新发票状态
 
         参考：https://work.weixin.qq.com/api/doc/90000/90135/90286
@@ -142,7 +154,11 @@ class WeChatInvoice(BaseWeChatAPI):
             raise ValueError("the invoice list cannot be empty")
 
         url = "card/invoice/reimburse/updatestatusbatch"
-        data = {"openid": openid, "reimburse_status": reimburse_status, "invoice_list": invoice_list}
+        data = {
+            "openid": openid,
+            "reimburse_status": reimburse_status,
+            "invoice_list": invoice_list,
+        }
         return self._post(url, data=data)
 
     @staticmethod
@@ -150,4 +166,6 @@ class WeChatInvoice(BaseWeChatAPI):
         if not status:
             raise ValueError("the invoice reimburse_status cannot be empty")
         if status not in invoice_reimburse_status_set:
-            raise ValueError(f"the invoice defer_status must be in the set of {invoice_reimburse_status_set!r}")
+            raise ValueError(
+                f"the invoice defer_status must be in the set of {invoice_reimburse_status_set!r}"
+            )

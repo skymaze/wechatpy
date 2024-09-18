@@ -9,7 +9,13 @@
 import copy
 from typing import Dict, Type
 
-from wechatpy.fields import BaseField, DateTimeField, FieldDescriptor, IntegerField, StringField
+from wechatpy.fields import (
+    BaseField,
+    DateTimeField,
+    FieldDescriptor,
+    IntegerField,
+    StringField,
+)
 
 MESSAGE_TYPES: Dict[str, Type] = {}
 COMPONENT_MESSAGE_TYPES: Dict[str, Type] = {}
@@ -234,7 +240,9 @@ class ComponentAuthorizedMessage(BaseComponentMessage):
     type: str = "authorized"
     authorizer_appid: StringField = StringField("AuthorizerAppid")
     authorization_code: StringField = StringField("AuthorizationCode")
-    authorization_code_expired_time: StringField = StringField("AuthorizationCodeExpiredTime")
+    authorization_code_expired_time: StringField = StringField(
+        "AuthorizationCodeExpiredTime"
+    )
     pre_auth_code: StringField = StringField("PreAuthCode")
 
 
@@ -247,7 +255,9 @@ class ComponentUpdateAuthorizedMessage(BaseComponentMessage):
     type: str = "updateauthorized"
     authorizer_appid: StringField = StringField("AuthorizerAppid")
     authorization_code: StringField = StringField("AuthorizationCode")
-    authorization_code_expired_time: StringField = StringField("AuthorizationCodeExpiredTime")
+    authorization_code_expired_time: StringField = StringField(
+        "AuthorizationCodeExpiredTime"
+    )
     pre_auth_code: StringField = StringField("PreAuthCode")
 
 

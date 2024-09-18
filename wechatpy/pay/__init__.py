@@ -105,13 +105,18 @@ class WeChatPay:
 
             # 商户 .p12 格式证书，证书密码默认为商户 ID
             self._http.mount(
-                self.API_BASE_URL, Pkcs12Adapter(pkcs12_filename=self.mch_cert, pkcs12_password=self.mch_id)
+                self.API_BASE_URL,
+                Pkcs12Adapter(
+                    pkcs12_filename=self.mch_cert, pkcs12_password=self.mch_id
+                ),
             )
             self._using_pkcs12_cert = True
 
     def _fetch_sandbox_api_key(self):
         nonce_str = random_string(32)
-        sign = calculate_signature({"mch_id": self.mch_id, "nonce_str": nonce_str}, self.api_key)
+        sign = calculate_signature(
+            {"mch_id": self.mch_id, "nonce_str": nonce_str}, self.api_key
+        )
         payload = dict_to_xml(
             {
                 "mch_id": self.mch_id,
@@ -143,9 +148,13 @@ class WeChatPay:
             data = optionaldict(data)
 
             if data.get("sign_type", "MD5") == "HMAC-SHA256":
-                sign = calculate_signature_hmac(data, self.sandbox_api_key if self.sandbox else self.api_key)
+                sign = calculate_signature_hmac(
+                    data, self.sandbox_api_key if self.sandbox else self.api_key
+                )
             else:
-                sign = calculate_signature(data, self.sandbox_api_key if self.sandbox else self.api_key)
+                sign = calculate_signature(
+                    data, self.sandbox_api_key if self.sandbox else self.api_key
+                )
             body = dict_to_xml(data, sign)
             body = body.encode("utf-8")
             kwargs["data"] = body
@@ -206,7 +215,9 @@ class WeChatPay:
         return self._request(method="post", url_or_endpoint=url, **kwargs)
 
     def check_signature(self, params):
-        return _check_signature(params, self.api_key if not self.sandbox else self.sandbox_api_key)
+        return _check_signature(
+            params, self.api_key if not self.sandbox else self.sandbox_api_key
+        )
 
     @classmethod
     def get_payment_data(cls, xml):
@@ -252,7 +263,9 @@ class WeChatPay:
 
         data = data["xml"]
         sign = data.pop("sign", None)
-        real_sign = calculate_signature(data, self.api_key if not self.sandbox else self.sandbox_api_key)
+        real_sign = calculate_signature(
+            data, self.api_key if not self.sandbox else self.sandbox_api_key
+        )
         if sign != real_sign:
             raise InvalidSignatureException()
 
@@ -270,7 +283,9 @@ class WeChatPay:
 
     def parse_refund_notify_result(self, xml):
         """解析微信退款结果通知"""
-        refund_crypto = WeChatRefundCrypto(self.api_key if not self.sandbox else self.sandbox_api_key)
+        refund_crypto = WeChatRefundCrypto(
+            self.api_key if not self.sandbox else self.sandbox_api_key
+        )
         data = refund_crypto.decrypt_message(xml, self.appid, self.mch_id)
         for key in (
             "total_fee",

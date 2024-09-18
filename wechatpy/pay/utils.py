@@ -28,7 +28,11 @@ def calculate_signature(params, api_key):
 
 def calculate_signature_hmac(params, api_key):
     url = format_url(params, api_key)
-    sign = to_text(hmac.new(api_key.encode(), msg=url, digestmod=hashlib.sha256).hexdigest().upper())
+    sign = to_text(
+        hmac.new(api_key.encode(), msg=url, digestmod=hashlib.sha256)
+        .hexdigest()
+        .upper()
+    )
     return sign
 
 

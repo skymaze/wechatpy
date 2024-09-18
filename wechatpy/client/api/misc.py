@@ -26,7 +26,9 @@ class WeChatMisc(BaseWeChatAPI):
         >>>    res = client.misc.short_url('http://www.qq.com')
 
         """
-        return self._post("shorturl", data={"action": "long2short", "long_url": long_url})
+        return self._post(
+            "shorturl", data={"action": "long2short", "long_url": long_url}
+        )
 
     def get_wechat_ips(self):
         """
@@ -59,4 +61,6 @@ class WeChatMisc(BaseWeChatAPI):
         :param operator: 指定平台从某个运营商进行检测，允许的值：CHINANET（电信出口）、UNICOM（联通出口）、CAP（腾讯自建出口）、DEFAULT（根据ip来选择运营商）
         :return: 返回的 JSON 数据包
         """
-        return self._post("callback/check", data={"action": action, "check_operator": operator})
+        return self._post(
+            "callback/check", data={"action": action, "check_operator": operator}
+        )

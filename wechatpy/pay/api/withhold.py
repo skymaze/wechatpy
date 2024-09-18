@@ -99,8 +99,14 @@ class WeChatWithhold(BaseWeChatPayAPI):
         :param version: 版本号 固定值1.0
         :return: 返回的结果信息
         """
-        if not contract_id and not (plan_id and contract_code) and not (plan_id and openid):
-            raise ValueError("contract_id and (plan_id, contract_code) and (plan_id, openid) must be a choice.")
+        if (
+            not contract_id
+            and not (plan_id and contract_code)
+            and not (plan_id and openid)
+        ):
+            raise ValueError(
+                "contract_id and (plan_id, contract_code) and (plan_id, openid) must be a choice."
+            )
         data = {
             "appid": self.appid,
             "mch_id": self.mch_id,
@@ -227,7 +233,9 @@ class WeChatWithhold(BaseWeChatPayAPI):
         :return:
         """
         if not (contract_id or (plan_id and contract_code)):
-            raise ValueError("contract_id and (plan_id, contract_code) must be a choice.")
+            raise ValueError(
+                "contract_id and (plan_id, contract_code) must be a choice."
+            )
         data = {
             "appid": self.appid,
             "mch_id": self.mch_id,

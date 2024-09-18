@@ -215,7 +215,9 @@ class WeChatMessage(BaseWeChatAPI):
                 "title": article["title"],
                 "description": article["description"],
                 "url": article["url"],
-                "thumb_url": article.get("image", article.get("picurl", article.get("thumb_url"))),
+                "thumb_url": article.get(
+                    "image", article.get("picurl", article.get("thumb_url"))
+                ),
             },
         }
         return self._send_custom_message(data, account=account)
@@ -655,7 +657,9 @@ class WeChatMessage(BaseWeChatAPI):
             client_msg_id,
         )
 
-    def get_subscribe_authorize_url(self, scene, template_id, redirect_url, reserved=None):
+    def get_subscribe_authorize_url(
+        self, scene, template_id, redirect_url, reserved=None
+    ):
         """
         构造请求用户授权的url
         详情请参阅：
@@ -681,7 +685,9 @@ class WeChatMessage(BaseWeChatAPI):
         encoded_params = urlencode(params)
         return f"{base_url}?{encoded_params}#wechat_redirect"
 
-    def send_subscribe_template(self, openid, template_id, scene, title, data, url=None):
+    def send_subscribe_template(
+        self, openid, template_id, scene, title, data, url=None
+    ):
         """
         一次性订阅消息，通过API推送订阅模板消息给到授权微信用户。
         详情请参阅：
@@ -711,7 +717,9 @@ class WeChatMessage(BaseWeChatAPI):
             data=post_data,
         )
 
-    def send_subscribe_message(self, openid, template_id, data, miniprogram=None, page=None):
+    def send_subscribe_message(
+        self, openid, template_id, data, miniprogram=None, page=None
+    ):
         """
         发送服务号订阅消息
         详情请参考

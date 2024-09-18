@@ -79,9 +79,13 @@ class WeChatTemplate(BaseWeChatAPI):
         :param template_id: 公众帐号下模板消息ID
         :return: 返回的 JSON 数据包
         """
-        return self._post("cgi-bin/template/del_private_template", data={"template_id": template_id})
+        return self._post(
+            "cgi-bin/template/del_private_template", data={"template_id": template_id}
+        )
 
-    def add_subscribe_message_template(self, tid: str, keywords: List[int], description: str) -> str:
+    def add_subscribe_message_template(
+        self, tid: str, keywords: List[int], description: str
+    ) -> str:
         """
         【订阅通知】选用模板 (使用 tid 换取 template_id)
         详情请参考
@@ -118,9 +122,13 @@ class WeChatTemplate(BaseWeChatAPI):
           { "id": 616, "name": "公交" }
         ]
         """
-        return self._get("wxaapi/newtmpl/getcategory", result_processor=operator.itemgetter("data"))
+        return self._get(
+            "wxaapi/newtmpl/getcategory", result_processor=operator.itemgetter("data")
+        )
 
-    def get_subscribe_message_template_keywords(self, tid: str) -> Tuple[int, List[Dict]]:
+    def get_subscribe_message_template_keywords(
+        self, tid: str
+    ) -> Tuple[int, List[Dict]]:
         """
         【订阅通知】获取模板中的关键词
         详情请参考
@@ -140,7 +148,9 @@ class WeChatTemplate(BaseWeChatAPI):
             result_processor=operator.itemgetter("count", "data"),
         )
 
-    def get_subscribe_message_template_titles(self, start: int = 0, limit: int = 30) -> Tuple[int, List[Dict]]:
+    def get_subscribe_message_template_titles(
+        self, start: int = 0, limit: int = 30
+    ) -> Tuple[int, List[Dict]]:
         """
         【订阅通知】获取所属类目的公共模板
         详情请参考
@@ -177,6 +187,8 @@ class WeChatTemplate(BaseWeChatAPI):
           }
         ]
         """
-        return self._get("wxaapi/newtmpl/gettemplate", result_processor=operator.itemgetter("data"))
+        return self._get(
+            "wxaapi/newtmpl/gettemplate", result_processor=operator.itemgetter("data")
+        )
 
     # send 接口参见 wechatpy.client.api.message.WeChatMessage.send_subscribe_message

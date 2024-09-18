@@ -29,7 +29,9 @@ class WeChatExport(BaseWeChatAPI):
             "encoding_aeskey": encoding_aeskey,
             "block_size": block_size,
         }
-        return self._post("export/simple_user", data=data, result_processor=itemgetter("jobid"))
+        return self._post(
+            "export/simple_user", data=data, result_processor=itemgetter("jobid")
+        )
 
     def export_user(self, encoding_aeskey: str, block_size: int = 10**6) -> str:
         """
@@ -42,7 +44,9 @@ class WeChatExport(BaseWeChatAPI):
             "encoding_aeskey": encoding_aeskey,
             "block_size": block_size,
         }
-        return self._post("export/user", data=data, result_processor=itemgetter("jobid"))
+        return self._post(
+            "export/user", data=data, result_processor=itemgetter("jobid")
+        )
 
     def export_department(self, encoding_aeskey: str, block_size: int = 10**6) -> str:
         """
@@ -55,9 +59,13 @@ class WeChatExport(BaseWeChatAPI):
             "encoding_aeskey": encoding_aeskey,
             "block_size": block_size,
         }
-        return self._post("export/department", data=data, result_processor=itemgetter("jobid"))
+        return self._post(
+            "export/department", data=data, result_processor=itemgetter("jobid")
+        )
 
-    def export_taguser(self, tagid: int, encoding_aeskey: str, block_size: int = 10**6) -> str:
+    def export_taguser(
+        self, tagid: int, encoding_aeskey: str, block_size: int = 10**6
+    ) -> str:
         """
         导出标签成员
 
@@ -75,7 +83,9 @@ class WeChatExport(BaseWeChatAPI):
             "encoding_aeskey": encoding_aeskey,
             "block_size": block_size,
         }
-        return self._post("export/taguser", data=data, result_processor=itemgetter("jobid"))
+        return self._post(
+            "export/taguser", data=data, result_processor=itemgetter("jobid")
+        )
 
     def get_result(self, jobid: str) -> dict:
         """
