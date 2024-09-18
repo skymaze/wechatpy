@@ -4,37 +4,21 @@
     ~~~~~~~~~~~~~~~
 
     This module provides OAuth2 library for WeChat
-
-    :copyright: (c) 2014 by messense.
-    :license: MIT, see LICENSE for more details.
 """
+
 import json
 from urllib.parse import quote
-
 import requests
-
 from wechatpy.exceptions import WeChatOAuthException
 
 
 class WeChatOAuth:
-    """微信公众平台 OAuth 网页授权
+    """微信公众平台 OAuth 网页授权"""
 
-    详情请参考
-    https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505
-    """
+    API_BASE_URL: str = "https://api.weixin.qq.com/"
+    OAUTH_BASE_URL: str = "https://open.weixin.qq.com/connect/"
 
-    API_BASE_URL = "https://api.weixin.qq.com/"
-    OAUTH_BASE_URL = "https://open.weixin.qq.com/connect/"
-
-    def __init__(self, app_id, secret, redirect_uri, scope="snsapi_base", state=""):
-        """
-
-        :param app_id: 微信公众号 app_id
-        :param secret: 微信公众号 secret
-        :param redirect_uri: OAuth2 redirect URI
-        :param scope: 可选，微信公众号 OAuth2 scope，默认为 ``snsapi_base``
-        :param state: 可选，微信公众号 OAuth2 state
-        """
+    def __init__(self, app_id: str, secret: str, redirect_uri: str, scope: str = "snsapi_base", state: str = "") -> None:
         self.app_id = app_id
         self.secret = secret
         self.redirect_uri = redirect_uri
@@ -42,7 +26,7 @@ class WeChatOAuth:
         self.state = state
         self._http = requests.Session()
 
-    def _request(self, method, url_or_endpoint, **kwargs):
+    def _request(self, method: str, url_or_endpoint: str, **kwargs) -> dict:
         if not url_or_endpoint.startswith(("http://", "https://")):
             url = f"{self.API_BASE_URL}{url_or_endpoint}"
         else:
@@ -73,15 +57,11 @@ class WeChatOAuth:
 
         return result
 
-    def _get(self, url, **kwargs):
+    def _get(self, url: str, **kwargs) -> dict:
         return self._request(method="get", url_or_endpoint=url, **kwargs)
 
     @property
-    def authorize_url(self):
-        """获取授权跳转地址
-
-        :return: URL 地址
-        """
+    def authorize_url(self) -> str:
         redirect_uri = quote(self.redirect_uri, safe=b"")
         url_list = [
             self.OAUTH_BASE_URL,
@@ -98,11 +78,7 @@ class WeChatOAuth:
         return "".join(url_list)
 
     @property
-    def qrconnect_url(self):
-        """生成扫码登录地址
-
-        :return: URL 地址
-        """
+    def qrconnect_url(self) -> str:
         redirect_uri = quote(self.redirect_uri, safe=b"")
         url_list = [
             self.OAUTH_BASE_URL,
@@ -118,12 +94,7 @@ class WeChatOAuth:
         url_list.append("#wechat_redirect")
         return "".join(url_list)
 
-    def fetch_access_token(self, code):
-        """获取 access_token
-
-        :param code: 授权完成跳转回来后 URL 中的 code 参数
-        :return: JSON 数据包
-        """
+    def fetch_access_token(self, code: str) -> dict:
         res = self._get(
             "sns/oauth2/access_token",
             params={
@@ -139,12 +110,7 @@ class WeChatOAuth:
         self.expires_in = res["expires_in"]
         return res
 
-    def refresh_access_token(self, refresh_token):
-        """刷新 access token
-
-        :param refresh_token: OAuth2 refresh token
-        :return: JSON 数据包
-        """
+    def refresh_access_token(self, refresh_token: str) -> dict:
         res = self._get(
             "sns/oauth2/refresh_token",
             params={
@@ -159,14 +125,7 @@ class WeChatOAuth:
         self.expires_in = res["expires_in"]
         return res
 
-    def get_user_info(self, openid=None, access_token=None, lang="zh_CN"):
-        """获取用户信息
-
-        :param openid: 可选，微信 openid，默认获取当前授权用户信息
-        :param access_token: 可选，access_token，默认使用当前授权用户的 access_token
-        :param lang: 可选，语言偏好, 默认为 ``zh_CN``
-        :return: JSON 数据包
-        """
+    def get_user_info(self, openid: str = None, access_token: str = None, lang: str = "zh_CN") -> dict:
         openid = openid or self.open_id
         access_token = access_token or self.access_token
         return self._get(
@@ -174,13 +133,7 @@ class WeChatOAuth:
             params={"access_token": access_token, "openid": openid, "lang": lang},
         )
 
-    def check_access_token(self, openid=None, access_token=None):
-        """检查 access_token 有效性
-
-        :param openid: 可选，微信 openid，默认获取当前授权用户信息
-        :param access_token: 可选，access_token，默认使用当前授权用户的 access_token
-        :return: 有效返回 True，否则 False
-        """
+    def check_access_token(self, openid: str = None, access_token: str = None) -> bool:
         openid = openid or self.open_id
         access_token = access_token or self.access_token
         res = self._get("sns/auth", params={"access_token": access_token, "openid": openid})

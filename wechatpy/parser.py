@@ -8,13 +8,14 @@
     :license: MIT, see LICENSE for more details.
 """
 import xmltodict
+from typing import Optional, Dict, Any
 
 from wechatpy.messages import MESSAGE_TYPES, UnknownMessage
 from wechatpy.events import EVENT_TYPES
 from wechatpy.utils import to_text
 
 
-def parse_message(xml):
+def parse_message(xml: str) -> Any:
     """
     解析微信服务器推送的 XML 消息
 
@@ -23,9 +24,9 @@ def parse_message(xml):
     """
     if not xml:
         return
-    message = xmltodict.parse(to_text(xml))["xml"]
-    message_type = message["MsgType"].lower()
-    event_type = None
+    message: Dict[str, Any] = xmltodict.parse(to_text(xml))["xml"]
+    message_type: str = message["MsgType"].lower()
+    event_type: Optional[str] = None
     if message_type == "event" or message_type.startswith("device_"):
         if "Event" in message:
             event_type = message["Event"].lower()
@@ -44,7 +45,7 @@ def parse_message(xml):
                 # Scan to subscribe with scene id event
                 event_type = "subscribe_scan"
                 message["Event"] = event_type
-                message["EventKey"] = event_key[len("qrscene_") :]
+                message["EventKey"] = event_key[len("qrscene_"):]
         message_class = EVENT_TYPES.get(event_type, UnknownMessage)
     else:
         message_class = MESSAGE_TYPES.get(message_type, UnknownMessage)

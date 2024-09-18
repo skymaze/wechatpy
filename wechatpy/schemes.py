@@ -9,7 +9,7 @@ from wechatpy.utils import random_string
 
 @dataclass
 class Scheme:
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Optional[str]]:
         return dataclasses.asdict(self)
 
 

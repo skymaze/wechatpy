@@ -4,28 +4,27 @@
     ~~~~~~~~~~~~~~~~~~
 
     This module defines all the messages you can get from WeChat server
-
-    :copyright: (c) 2014 by messense.
-    :license: MIT, see LICENSE for more details.
 """
+
 import copy
+from typing import Dict, Type
 
 from wechatpy.fields import BaseField, DateTimeField, FieldDescriptor, IntegerField, StringField
 
-MESSAGE_TYPES = {}
-COMPONENT_MESSAGE_TYPES = {}
+MESSAGE_TYPES: Dict[str, Type] = {}
+COMPONENT_MESSAGE_TYPES: Dict[str, Type] = {}
 
 
-def register_message(msg_type):
-    def register(cls):
+def register_message(msg_type: str):
+    def register(cls: Type):
         MESSAGE_TYPES[msg_type] = cls
         return cls
 
     return register
 
 
-def register_component_message(msg_type):
-    def register(cls):
+def register_component_message(msg_type: str):
+    def register(cls: Type):
         COMPONENT_MESSAGE_TYPES[msg_type] = cls
         return cls
 
@@ -35,7 +34,7 @@ def register_component_message(msg_type):
 class MessageMetaClass(type):
     """Metaclass for all messages"""
 
-    def __new__(mcs, name, bases, attrs):
+    def __new__(mcs, name: str, bases: tuple, attrs: dict):
         for b in bases:
             if not hasattr(b, "_fields"):
                 continue
@@ -58,12 +57,12 @@ class MessageMetaClass(type):
 class BaseMessage(metaclass=MessageMetaClass):
     """Base class for all messages and events"""
 
-    type = "unknown"
-    id = IntegerField("MsgId", 0)
-    source = StringField("FromUserName")
-    target = StringField("ToUserName")
-    create_time = DateTimeField("CreateTime")
-    time = IntegerField("CreateTime")
+    type: str = "unknown"
+    id: IntegerField = IntegerField("MsgId", 0)
+    source: StringField = StringField("FromUserName")
+    target: StringField = StringField("ToUserName")
+    create_time: DateTimeField = DateTimeField("CreateTime")
+    time: IntegerField = IntegerField("CreateTime")
 
     def __init__(self, message):
         self._data = message
@@ -80,8 +79,8 @@ class TextMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "text"
-    content = StringField("Content")
+    type: str = "text"
+    content: StringField = StringField("Content")
 
 
 @register_message("image")
@@ -92,9 +91,9 @@ class ImageMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "image"
-    media_id = StringField("MediaId")
-    image = StringField("PicUrl")
+    type: str = "image"
+    media_id: StringField = StringField("MediaId")
+    image: StringField = StringField("PicUrl")
 
 
 @register_message("voice")
@@ -105,10 +104,10 @@ class VoiceMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "voice"
-    media_id = StringField("MediaId")
-    format = StringField("Format")
-    recognition = StringField("Recognition")
+    type: str = "voice"
+    media_id: StringField = StringField("MediaId")
+    format: StringField = StringField("Format")
+    recognition: StringField = StringField("Recognition")
 
 
 @register_message("shortvideo")
@@ -119,9 +118,9 @@ class ShortVideoMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "shortvideo"
-    media_id = StringField("MediaId")
-    thumb_media_id = StringField("ThumbMediaId")
+    type: str = "shortvideo"
+    media_id: StringField = StringField("MediaId")
+    thumb_media_id: StringField = StringField("ThumbMediaId")
 
 
 @register_message("video")
@@ -132,9 +131,9 @@ class VideoMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "video"
-    media_id = StringField("MediaId")
-    thumb_media_id = StringField("ThumbMediaId")
+    type: str = "video"
+    media_id: StringField = StringField("MediaId")
+    thumb_media_id: StringField = StringField("ThumbMediaId")
 
 
 @register_message("location")
@@ -145,11 +144,11 @@ class LocationMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "location"
-    location_x = StringField("Location_X")
-    location_y = StringField("Location_Y")
-    scale = StringField("Scale")
-    label = StringField("Label")
+    type: str = "location"
+    location_x: StringField = StringField("Location_X")
+    location_y: StringField = StringField("Location_Y")
+    scale: StringField = StringField("Scale")
+    label: StringField = StringField("Label")
 
     @property
     def location(self):
@@ -164,10 +163,10 @@ class LinkMessage(BaseMessage):
     https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
     """
 
-    type = "link"
-    title = StringField("Title")
-    description = StringField("Description")
-    url = StringField("Url")
+    type: str = "link"
+    title: StringField = StringField("Title")
+    description: StringField = StringField("Description")
+    url: StringField = StringField("Url")
 
 
 @register_message("miniprogrampage")
@@ -178,12 +177,12 @@ class MiniProgramPageMessage(BaseMessage):
     https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/customer-message/receive.html#小程序卡片消息
     """
 
-    type = "miniprogrampage"
-    app_id = StringField("AppId")
-    title = StringField("Title")
-    page_path = StringField("PagePath")
-    thumb_url = StringField("ThumbUrl")
-    thumb_media_id = StringField("ThumbMediaId")
+    type: str = "miniprogrampage"
+    app_id: StringField = StringField("AppId")
+    title: StringField = StringField("Title")
+    page_path: StringField = StringField("PagePath")
+    thumb_url: StringField = StringField("ThumbUrl")
+    thumb_media_id: StringField = StringField("ThumbMediaId")
 
 
 class UnknownMessage(BaseMessage):
@@ -195,9 +194,9 @@ class UnknownMessage(BaseMessage):
 class BaseComponentMessage(metaclass=MessageMetaClass):
     """Base class for all component messages and events"""
 
-    type = "unknown"
-    appid = StringField("AppId")
-    create_time = DateTimeField("CreateTime")
+    type: str = "unknown"
+    appid: StringField = StringField("AppId")
+    create_time: DateTimeField = DateTimeField("CreateTime")
 
     def __init__(self, message):
         self._data = message
@@ -212,8 +211,8 @@ class ComponentVerifyTicketMessage(BaseComponentMessage):
     component_verify_ticket协议
     """
 
-    type = "component_verify_ticket"
-    verify_ticket = StringField("ComponentVerifyTicket")
+    type: str = "component_verify_ticket"
+    verify_ticket: StringField = StringField("ComponentVerifyTicket")
 
 
 @register_component_message("unauthorized")
@@ -222,8 +221,8 @@ class ComponentUnauthorizedMessage(BaseComponentMessage):
     取消授权通知
     """
 
-    type = "unauthorized"
-    authorizer_appid = StringField("AuthorizerAppid")
+    type: str = "unauthorized"
+    authorizer_appid: StringField = StringField("AuthorizerAppid")
 
 
 @register_component_message("authorized")
@@ -232,11 +231,11 @@ class ComponentAuthorizedMessage(BaseComponentMessage):
     新增授权通知
     """
 
-    type = "authorized"
-    authorizer_appid = StringField("AuthorizerAppid")
-    authorization_code = StringField("AuthorizationCode")
-    authorization_code_expired_time = StringField("AuthorizationCodeExpiredTime")
-    pre_auth_code = StringField("PreAuthCode")
+    type: str = "authorized"
+    authorizer_appid: StringField = StringField("AuthorizerAppid")
+    authorization_code: StringField = StringField("AuthorizationCode")
+    authorization_code_expired_time: StringField = StringField("AuthorizationCodeExpiredTime")
+    pre_auth_code: StringField = StringField("PreAuthCode")
 
 
 @register_component_message("updateauthorized")
@@ -245,11 +244,11 @@ class ComponentUpdateAuthorizedMessage(BaseComponentMessage):
     更新授权通知
     """
 
-    type = "updateauthorized"
-    authorizer_appid = StringField("AuthorizerAppid")
-    authorization_code = StringField("AuthorizationCode")
-    authorization_code_expired_time = StringField("AuthorizationCodeExpiredTime")
-    pre_auth_code = StringField("PreAuthCode")
+    type: str = "updateauthorized"
+    authorizer_appid: StringField = StringField("AuthorizerAppid")
+    authorization_code: StringField = StringField("AuthorizationCode")
+    authorization_code_expired_time: StringField = StringField("AuthorizationCodeExpiredTime")
+    pre_auth_code: StringField = StringField("PreAuthCode")
 
 
 class ComponentUnknownMessage(BaseComponentMessage):
@@ -257,4 +256,4 @@ class ComponentUnknownMessage(BaseComponentMessage):
     未知通知
     """
 
-    type = "unknown"
+    type: str = "unknown"

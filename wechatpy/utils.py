@@ -4,49 +4,49 @@
     ~~~~~~~~~~~~~~~
 
     This module provides some useful utilities.
-
-    :copyright: (c) 2014 by messense.
-    :license: MIT, see LICENSE for more details.
 """
 
 import string
 import random
 import hashlib
+from dateutil.tz import gettz
+from typing import List, Union, Optional
+from wechatpy.exceptions import InvalidSignatureException
 
 
 class ObjectDict(dict):
     """Makes a dictionary behave like an object, with attribute-style access."""
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str) -> Optional[Union[str, None]]:
         if key in self:
             return self[key]
         return None
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key: str, value: Union[str, None]) -> None:
         self[key] = value
 
 
 class WeChatSigner:
     """WeChat data signer"""
 
-    def __init__(self, delimiter=b""):
-        self._data = []
-        self._delimiter = to_binary(delimiter)
+    def __init__(self, delimiter: bytes = b"") -> None:
+        self._data: List[bytes] = []
+        self._delimiter: bytes = to_binary(delimiter)
 
-    def add_data(self, *args):
+    def add_data(self, *args: Union[str, bytes]) -> None:
         """Add data to signer"""
         for data in args:
             self._data.append(to_binary(data))
 
     @property
-    def signature(self):
+    def signature(self) -> str:
         """Get data signature"""
         self._data.sort()
         str_to_sign = self._delimiter.join(self._data)
         return hashlib.sha1(str_to_sign).hexdigest()
 
 
-def check_signature(token, signature, timestamp, nonce):
+def check_signature(token: str, signature: str, timestamp: str, nonce: str) -> None:
     """Check WeChat callback signature, raises InvalidSignatureException
     if check failed.
 
@@ -58,12 +58,10 @@ def check_signature(token, signature, timestamp, nonce):
     signer = WeChatSigner()
     signer.add_data(token, timestamp, nonce)
     if signer.signature != signature:
-        from wechatpy.exceptions import InvalidSignatureException
-
         raise InvalidSignatureException()
 
 
-def check_wxa_signature(session_key, raw_data, client_signature):
+def check_wxa_signature(session_key: str, raw_data: str, client_signature: str) -> None:
     """校验前端传来的rawData签名正确
     详情请参考
     https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html # noqa
@@ -77,12 +75,10 @@ def check_wxa_signature(session_key, raw_data, client_signature):
     str2sign = (raw_data + session_key).encode("utf-8")
     signature = hashlib.sha1(str2sign).hexdigest()
     if signature != client_signature:
-        from wechatpy.exceptions import InvalidSignatureException
-
         raise InvalidSignatureException()
 
 
-def to_text(value, encoding="utf-8"):
+def to_text(value: Union[str, bytes], encoding: str = "utf-8") -> str:
     """Convert value to unicode, default encoding is utf-8
 
     :param value: Value to be converted
@@ -97,7 +93,7 @@ def to_text(value, encoding="utf-8"):
     return str(value)
 
 
-def to_binary(value, encoding="utf-8"):
+def to_binary(value: Union[str, bytes], encoding: str = "utf-8") -> bytes:
     """Convert value to binary string, default encoding is utf-8
 
     :param value: Value to be converted
@@ -112,27 +108,16 @@ def to_binary(value, encoding="utf-8"):
     return to_text(value).encode(encoding)
 
 
-def timezone(zone):
+def timezone(zone: str) -> Optional[object]:
     """Try to get timezone using pytz or python-dateutil
 
     :param zone: timezone str
     :return: timezone tzinfo or None
     """
-    try:
-        import pytz
-
-        return pytz.timezone(zone)
-    except ImportError:
-        pass
-    try:
-        from dateutil.tz import gettz
-
-        return gettz(zone)
-    except ImportError:
-        return None
+    return gettz(zone)
 
 
-def random_string(length=16):
+def random_string(length: int = 16) -> str:
     rule = string.ascii_letters + string.digits
     rand_list = random.sample(rule, length)
     return "".join(rand_list)
