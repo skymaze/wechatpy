@@ -76,7 +76,7 @@ class BaseWeChatClient:
         if isinstance(kwargs.get("data", ""), dict):
             body = json.dumps(kwargs["data"], ensure_ascii=False)
             body = body.encode("utf-8")
-            kwargs["data"] = body
+            kwargs["content"] = body
 
         kwargs["timeout"] = kwargs.get("timeout", self.timeout)
         result_processor = kwargs.pop("result_processor", None)
