@@ -53,9 +53,9 @@ def test_fetch_access_token_is_method(httpx_mock: HTTPXMock):
 def test_fetch_access_token(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     client = WeChatComponent(app_id, app_secret, token, encoding_aes_key)
-    token = client.fetch_access_token()
-    assert token["component_access_token"] == "1234567890"
-    assert 7200 == token["expires_in"]
+    access_token = client.fetch_access_token()
+    assert access_token["component_access_token"] == "1234567890"
+    assert 7200 == access_token["expires_in"]
     assert "1234567890" == client.access_token
 
 
@@ -141,7 +141,7 @@ def test_get_authorize_url(httpx_mock: HTTPXMock):
     )
 
 
-def test_fetch_access_token(httpx_mock: HTTPXMock):
+def test_fetch_oauth_access_token(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     component = WeChatComponent(
         component_appid,
@@ -157,7 +157,7 @@ def test_fetch_access_token(httpx_mock: HTTPXMock):
     assert "ACCESS_TOKEN" == res["access_token"]
 
 
-def test_refresh_access_token(httpx_mock: HTTPXMock):
+def test_refresh_oauth_access_token(httpx_mock: HTTPXMock):
     httpx_mock.add_callback(custom_response)
     component = WeChatComponent(
         component_appid,
